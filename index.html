@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loop Ideas</title>
+    <link rel="stylesheet" href="styles.css?v=10">
+  </head>
+  <body data-view="home" class="auth-locked">
+    <section class="auth-screen" id="authScreen" aria-labelledby="authTitle">
+      <div class="auth-card">
+        <div class="brand-logo-shell auth-logo">
+          <img src="assets/loop-future-logo.png" alt="Loop Future" class="brand-logo">
+        </div>
+        <p class="eyebrow">Future Box</p>
+        <h1 id="authTitle">Entrar na plataforma</h1>
+        <p class="auth-copy">Acede com o email convidado e a password temporária enviada pela equipa de gestão.</p>
+        <form class="auth-form" id="loginForm">
+          <label class="field">
+            <span>Email</span>
+            <input id="loginEmail" type="email" autocomplete="username" required placeholder="nome@loopfuture.com">
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Password temporária">
+          </label>
+          <p class="auth-error hidden" id="loginError">Email ou password inválidos.</p>
+          <button class="primary-button" type="submit">Entrar</button>
+        </form>
+        <p class="auth-demo">Demo: admin@loopfuture.com · LoopFuture2026!</p>
+      </div>
+    </section>
+
+    <main class="app-shell protected-app">
+      <section class="workspace">
+        <aside class="sidebar" aria-label="Navegação">
+          <div class="brand-block">
+            <div class="brand-logo-shell">
+              <img src="assets/loop-future-logo.png" alt="Loop Future" class="brand-logo">
+            </div>
+            <h1>Loop Ideas</h1>
+          </div>
+
+          <nav class="nav-list" aria-label="Secções">
+            <button class="nav-item active" data-view="home" type="button">
+              <span aria-hidden="true">⌂</span>
+              Inicial
+            </button>
+            <button class="nav-item" data-view="explore" type="button">
+              <span aria-hidden="true">□</span>
+              Ideias
+            </button>
+            <button class="nav-item" data-view="hackathons" type="button">
+              <span aria-hidden="true">◇</span>
+              Hackathons
+            </button>
+            <button class="nav-item" data-view="manage" type="button">
+              <span aria-hidden="true">✓</span>
+              Gestão
+            </button>
+          </nav>
+
+          <div class="sidebar-panel">
+            <p class="metric-label">Ideias implementadas</p>
+            <strong id="implementedCount">0</strong>
+            <span>desde o lançamento</span>
+          </div>
+        </aside>
+
+        <section class="content">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow">Caixa de inovação</p>
+              <h2 id="viewTitle">Inicial</h2>
+            </div>
+            <div class="topbar-actions">
+              <button class="primary-button top-cta" id="openIdeaModalButton" type="button">Submeter ideia</button>
+              <button class="secondary-button top-cta hidden" id="openHackathonModalButton" type="button">Nova hackathon</button>
+              <button class="icon-button" id="teamsButton" type="button" title="Preparar mensagem Teams" aria-label="Preparar mensagem Teams">T</button>
+              <button class="icon-button" id="exportButton" type="button" title="Exportar dados" aria-label="Exportar dados">↓</button>
+              <span class="user-badge" id="userBadge"></span>
+              <button class="secondary-button top-cta" id="logoutButton" type="button">Sair</button>
+              <div class="language-switch" aria-label="Idioma">
+                <button class="active" id="langPtButton" type="button">PT</button>
+                <button id="langEnButton" type="button">EN</button>
+              </div>
+            </div>
+          </header>
+
+          <section class="hero-band" aria-label="Resumo">
+            <div class="hero-copy">
+              <p class="eyebrow">Future Box</p>
+              <h3>Uma ideia pequena pode mudar um processo inteiro.</h3>
+              <p class="hero-note">Submissão curta, visibilidade imediata e acompanhamento claro até à decisão.</p>
+              <div class="hero-stats">
+                <div>
+                  <strong id="totalIdeas">0</strong>
+                  <span>ideias</span>
+                </div>
+                <div>
+                  <strong id="pilotIdeas">0</strong>
+                  <span>em piloto</span>
+                </div>
+                <div>
+                  <strong id="topVotes">0</strong>
+                  <span>apoios</span>
+                </div>
+              </div>
+            </div>
+            <img src="assets/innovation-banner.png?v=3" alt="" class="hero-image">
+          </section>
+
+          <section class="view active" id="homeView" aria-labelledby="viewTitle">
+            <div class="home-grid">
+              <article class="home-card home-card-main">
+                <p class="eyebrow">Resumo geral</p>
+                <h3>O pulso de inovação da Loop Future.</h3>
+                <div class="home-metrics">
+                  <div>
+                    <strong id="homeIdeasCount">0</strong>
+                    <span>ideias registadas</span>
+                  </div>
+                  <div>
+                    <strong id="homeHackathonsCount">0</strong>
+                    <span>hackathons criadas</span>
+                  </div>
+                  <div>
+                    <strong id="homeAccessCount">0</strong>
+                    <span>acessos ativos</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="home-card home-card-actions">
+                <p class="eyebrow">Ações rápidas</p>
+                <button class="primary-button" id="homeSubmitIdeaButton" type="button">Submeter ideia</button>
+                <button class="secondary-button" id="homeCreateHackathonButton" type="button">Criar hackathon</button>
+              </article>
+
+              <article class="home-card home-card-hackathon">
+                <p class="eyebrow">Hackathon ativa</p>
+                <h3 id="homeHackathonTitle">Ainda sem hackathons</h3>
+                <p id="homeHackathonMeta">Quando criares uma hackathon, o resumo aparece aqui.</p>
+              </article>
+
+              <article class="home-card home-card-featured">
+                <p class="eyebrow">Ideia em destaque</p>
+                <h3 id="homeTopIdeaTitle">Ainda sem ideias</h3>
+                <p id="homeTopIdeaMeta">As ideias mais apoiadas aparecem aqui.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="exploreView" aria-labelledby="viewTitle">
+            <div class="toolbar">
+              <label class="search-field">
+                <span>Pesquisar</span>
+                <input id="searchInput" placeholder="Título, área ou benefício">
+              </label>
+              <label class="compact-field">
+                <span>Estado</span>
+                <select id="statusFilter">
+                  <option value="all">Todos</option>
+                  <option>Nova</option>
+                  <option>Em análise</option>
+                  <option>Em piloto</option>
+                  <option>Implementada</option>
+                  <option>Arquivada</option>
+                </select>
+              </label>
+              <label class="compact-field">
+                <span>Ordenar</span>
+                <select id="sortSelect">
+                  <option value="recent">Recentes</option>
+                  <option value="votes">Mais apoiadas</option>
+                  <option value="impact">Impacto</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="ideas-grid" id="ideasGrid"></div>
+          </section>
+
+          <section class="view" id="hackathonsView" aria-labelledby="viewTitle">
+            <div class="toolbar hackathon-toolbar">
+              <div>
+                <p class="eyebrow">Programas de inovação</p>
+                <h3>Hackathons criadas</h3>
+              </div>
+              <button class="primary-button" id="openHackathonModalButtonInline" type="button">Criar hackathon</button>
+            </div>
+            <div class="ideas-grid hackathons-grid" id="hackathonsGrid"></div>
+          </section>
+
+          <section class="view" id="manageView" aria-labelledby="viewTitle">
+            <section class="access-panel">
+              <div class="access-head">
+                <div>
+                  <p class="eyebrow">Permissões</p>
+                  <h3>Gestão de acessos</h3>
+                </div>
+              </div>
+              <p class="access-note" id="accessHelp">Ao dar acesso, é gerada uma password temporária e um convite para enviar ao utilizador.</p>
+              <div class="access-controls">
+                <label class="field">
+                  <span>Email</span>
+                  <input id="accessEmail" type="email" placeholder="nome@loopfuture.com">
+                </label>
+                <label class="field">
+                  <span>Perfil</span>
+                  <select id="accessRole">
+                    <option>Administrador</option>
+                    <option>Gestor de ideias</option>
+                    <option>Dinamizador hackathons</option>
+                    <option>Leitor</option>
+                  </select>
+                </label>
+                <button class="primary-button" id="grantAccessButton" type="button">Dar acesso</button>
+              </div>
+              <div class="access-list" id="accessList"></div>
+            </section>
+            <div class="management-layout">
+              <div class="pipeline" id="pipeline"></div>
+              <div class="detail-panel" id="detailPanel">
+                <p class="empty-state">Seleciona uma ideia para rever detalhes, comentários e estado.</p>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div class="modal-backdrop hidden" id="ideaModal" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
+      <section class="modal-panel">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Rascunho rápido</p>
+            <h3 id="ideaModalTitle">Partilha o essencial.</h3>
+          </div>
+          <button class="icon-button" data-close-modal="ideaModal" type="button" aria-label="Fechar">×</button>
+        </div>
+
+        <form class="idea-form modal-form" id="ideaForm">
+          <div class="form-grid">
+            <label class="field field-wide">
+              <span>Título da ideia</span>
+              <input id="ideaTitle" name="title" maxlength="80" required placeholder="Ex.: Automatizar validação de relatórios">
+            </label>
+
+            <label class="field">
+              <span>Área</span>
+              <select id="ideaArea" name="area" required>
+                <option value="">Selecionar</option>
+                <option>Operações</option>
+                <option>Comercial</option>
+                <option>Cliente</option>
+                <option>Tecnologia</option>
+                <option>Pessoas</option>
+                <option>Financeiro</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Tipo</span>
+              <select id="ideaType" name="type" required>
+                <option value="">Selecionar</option>
+                <option>Melhoria de processo</option>
+                <option>Nova oportunidade</option>
+                <option>Automação</option>
+                <option>Inovação</option>
+                <option>Experiência do cliente</option>
+                <option>Bem-estar interno</option>
+                <option>Outro</option>
+              </select>
+            </label>
+
+            <label class="field hidden" id="ideaTypeOtherField">
+              <span>Indicar tipo</span>
+              <input id="ideaTypeOther" name="typeOther" maxlength="80" placeholder="Indica o tipo">
+            </label>
+
+            <label class="field field-wide">
+              <span>Problema atual</span>
+              <textarea id="ideaProblem" name="problem" rows="3" required placeholder="O que está a criar desperdício, atrito ou oportunidade perdida?"></textarea>
+            </label>
+
+            <label class="field field-wide">
+              <span>Melhoria proposta</span>
+              <textarea id="ideaSolution" name="solution" rows="3" required placeholder="Como imaginarias a solução?"></textarea>
+            </label>
+
+            <label class="field">
+              <span>Benefício esperado</span>
+              <select id="ideaBenefit" name="benefit" required>
+                <option value="">Selecionar</option>
+                <option>Poupa tempo</option>
+                <option>Reduz erros</option>
+                <option>Melhora cliente</option>
+                <option>Aumenta receita</option>
+                <option>Melhora equipa</option>
+                <option>Outro</option>
+              </select>
+            </label>
+
+            <label class="field hidden" id="ideaBenefitOtherField">
+              <span>Indicar benefício</span>
+              <input id="ideaBenefitOther" name="benefitOther" maxlength="80" placeholder="Indica o benefício">
+            </label>
+
+            <label class="field">
+              <span>Autor</span>
+              <input id="ideaAuthor" name="author" maxlength="60" placeholder="Nome ou equipa">
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-button" type="submit">Submeter ideia</button>
+            <button class="secondary-button" id="clearFormButton" type="button">Limpar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop hidden" id="hackathonModal" role="dialog" aria-modal="true" aria-labelledby="hackathonModalTitle">
+      <section class="modal-panel">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Nova hackathon</p>
+            <h3 id="hackathonModalTitle">Criar desafio colaborativo.</h3>
+          </div>
+          <button class="icon-button" data-close-modal="hackathonModal" type="button" aria-label="Fechar">×</button>
+        </div>
+
+        <form class="idea-form modal-form" id="hackathonForm">
+          <div class="form-grid">
+            <label class="field field-wide">
+              <span>Nome</span>
+              <input id="hackathonName" name="name" maxlength="90" required placeholder="Ex.: Hackathon Eficiência Operacional">
+            </label>
+
+            <label class="field field-wide">
+              <span>Objetivo</span>
+              <textarea id="hackathonGoal" name="goal" rows="3" required placeholder="Que problema ou oportunidade esta hackathon pretende resolver?"></textarea>
+            </label>
+
+            <label class="field">
+              <span>Data de início</span>
+              <input id="hackathonStartDate" name="startDate" type="date" required>
+            </label>
+
+            <label class="field">
+              <span>Data de fim</span>
+              <input id="hackathonEndDate" name="endDate" type="date" required>
+            </label>
+
+            <label class="field field-wide">
+              <span>Regras / regulamento</span>
+              <textarea id="hackathonRules" name="rules" rows="5" required placeholder="Critérios de participação, calendário, avaliação, entregáveis e regras principais."></textarea>
+            </label>
+
+            <div class="field field-wide">
+              <span>Logo / foto</span>
+              <label class="image-upload">
+                <input id="hackathonImage" name="image" type="file" accept="image/*">
+                <span id="hackathonImageLabel">Adicionar imagem</span>
+              </label>
+              <div class="image-preview hidden" id="hackathonImagePreview"></div>
+            </div>
+
+            <div class="field field-wide">
+              <span>Participantes</span>
+              <div class="participant-entry">
+                <input id="participantEmail" type="email" placeholder="email@loopfuture.com">
+                <button class="secondary-button" id="addParticipantButton" type="button">Adicionar</button>
+              </div>
+              <div class="participant-list" id="participantList"></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-button" type="submit">Criar hackathon</button>
+            <button class="secondary-button" id="clearHackathonButton" type="button">Limpar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <template id="ideaCardTemplate">
+      <article class="idea-card">
+        <div class="card-header">
+          <span class="status-pill"></span>
+          <button class="vote-button" type="button" aria-label="Apoiar ideia">↑ <span></span></button>
+        </div>
+        <h3></h3>
+        <p class="idea-summary"></p>
+        <div class="card-meta"></div>
+        <button class="text-button" type="button">Ver detalhe</button>
+      </article>
+    </template>
+
+    <template id="hackathonCardTemplate">
+      <article class="idea-card hackathon-card">
+        <div class="hackathon-media"></div>
+        <div class="card-header">
+          <span class="status-pill">Aberta</span>
+          <span class="meta-chip participant-count"></span>
+        </div>
+        <h3></h3>
+        <p class="idea-summary"></p>
+        <div class="card-meta"></div>
+      </article>
+    </template>
+
+    <script src="app.js?v=10"></script>
+  </body>
+</html>
