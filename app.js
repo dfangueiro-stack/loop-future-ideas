@@ -1,6 +1,7 @@
 const IDEAS_STORAGE_KEY = "loopIdeas.v1";
 const HACKATHONS_STORAGE_KEY = "loopHackathons.v1";
 const ACCESS_STORAGE_KEY = "loopAccess.v1";
+const ACCESS_SCHEMA_VERSION_KEY = "loopAccessSchema.v2";
 const LANGUAGE_STORAGE_KEY = "loopLanguage.v1";
 const SESSION_STORAGE_KEY = "loopSession.v1";
 
@@ -69,11 +70,14 @@ const translations = {
     auth: {
       eyebrow: "Future Box",
       title: "Entrar na plataforma",
+      setupTitle: "Criar primeiro administrador",
       copy: "Acede com o email convidado e a password temporária enviada pela equipa de gestão.",
+      setupCopy: "Define o primeiro acesso de administração para começar a usar a plataforma.",
       password: "Password",
       passwordPlaceholder: "Password temporária",
+      setupPasswordPlaceholder: "Define uma password",
       error: "Email ou password inválidos.",
-      demo: "Demo: admin@loopfuture.com · LoopFuture2026!",
+      setupError: "Insere um email válido e uma password com pelo menos 8 caracteres.",
       userPrefix: "Sessão",
       accessHelp: "Ao dar acesso, é gerada uma password temporária e um convite para enviar ao utilizador."
     },
@@ -137,6 +141,7 @@ const translations = {
       accessGranted: "Acesso atribuído."
       ,
       inviteCopied: "Convite copiado.",
+      adminCreated: "Administrador criado.",
       signedIn: "Sessão iniciada.",
       signedOut: "Sessão terminada."
     }
@@ -150,7 +155,7 @@ const translations = {
     filters: { search: "Search", searchPlaceholder: "Title, area, or benefit", status: "Status", sort: "Sort" },
     hackathons: { program: "Innovation programs", created: "Created hackathons", open: "Open", rulesDefined: "Rules defined", invitesSent: "Invites sent", invitesPending: "Invites pending" },
     access: { permissions: "Permissions", title: "Access management", email: "Email", role: "Role" },
-    auth: { eyebrow: "Future Box", title: "Sign in to the platform", copy: "Use the invited email and temporary password sent by the management team.", password: "Password", passwordPlaceholder: "Temporary password", error: "Invalid email or password.", demo: "Demo: admin@loopfuture.com · LoopFuture2026!", userPrefix: "Session", accessHelp: "Granting access generates a temporary password and an invitation to send to the user." },
+    auth: { eyebrow: "Future Box", title: "Sign in to the platform", setupTitle: "Create first administrator", copy: "Use the invited email and temporary password sent by the management team.", setupCopy: "Set the first administrator access to start using the platform.", password: "Password", passwordPlaceholder: "Temporary password", setupPasswordPlaceholder: "Set a password", error: "Invalid email or password.", setupError: "Enter a valid email and a password with at least 8 characters.", userPrefix: "Session", accessHelp: "Granting access generates a temporary password and an invitation to send to the user." },
     ideaForm: { eyebrow: "Quick draft", title: "Share the essentials.", ideaTitle: "Idea title", ideaTitlePlaceholder: "E.g. Automate report validation", area: "Area", type: "Type", problem: "Current problem", problemPlaceholder: "What is creating waste, friction, or a missed opportunity?", solution: "Proposed improvement", solutionPlaceholder: "How would you imagine the solution?", benefit: "Expected benefit", typeOther: "Specify type", typeOtherPlaceholder: "Enter the type", benefitOther: "Specify benefit", benefitOtherPlaceholder: "Enter the benefit", author: "Author", authorPlaceholder: "Name or team" },
     hackathonForm: { eyebrow: "New hackathon", title: "Create a collaborative challenge.", name: "Name", namePlaceholder: "E.g. Operational Efficiency Hackathon", goal: "Objective", goalPlaceholder: "What problem or opportunity should this hackathon address?", startDate: "Start date", endDate: "End date", rules: "Rules / regulation", rulesPlaceholder: "Participation criteria, timeline, evaluation, deliverables, and main rules.", image: "Logo / photo", addImage: "Add image", participants: "Participants", participantPlaceholder: "email@loopfuture.com" },
     detail: { area: "Area", type: "Type", benefit: "Benefit", votes: "Supports", impact: "Impact", effort: "Effort", problem: "Current problem", solution: "Proposed improvement", comments: "Comments", newComment: "New comment", commentPlaceholder: "Evaluation note" },
@@ -162,7 +167,7 @@ const translations = {
       benefits: { "Poupa tempo": "Saves time", "Reduz erros": "Reduces errors", "Melhora cliente": "Improves customer", "Aumenta receita": "Increases revenue", "Melhora equipa": "Improves team", "Outro": "Other" },
       roles: { "Administrador": "Administrator", "Gestor de ideias": "Idea manager", "Dinamizador hackathons": "Hackathon facilitator", "Leitor": "Reader" }
     },
-    messages: { ideaSubmitted: "Idea submitted.", supportRegistered: "Support registered.", ideaUpdated: "Idea updated.", exportCreated: "Export created.", teamsCopied: "Teams message copied.", invalidEmail: "Enter a valid email.", duplicateParticipant: "That participant has already been added.", addParticipant: "Add at least one participant.", hackathonCreated: "Hackathon created and invites sent.", endAfterStart: "End date must be after start date.", accessRemoved: "Access removed.", accessUpdated: "Role updated.", accessGranted: "Access granted.", inviteCopied: "Invite copied.", signedIn: "Signed in.", signedOut: "Signed out." }
+    messages: { ideaSubmitted: "Idea submitted.", supportRegistered: "Support registered.", ideaUpdated: "Idea updated.", exportCreated: "Export created.", teamsCopied: "Teams message copied.", invalidEmail: "Enter a valid email.", duplicateParticipant: "That participant has already been added.", addParticipant: "Add at least one participant.", hackathonCreated: "Hackathon created and invites sent.", endAfterStart: "End date must be after start date.", accessRemoved: "Access removed.", accessUpdated: "Role updated.", accessGranted: "Access granted.", inviteCopied: "Invite copied.", adminCreated: "Administrator created.", signedIn: "Signed in.", signedOut: "Signed out." }
   }
 };
 
@@ -237,29 +242,14 @@ const seedHackathons = [
   }
 ];
 
-const seedAccessList = [
-  {
-    id: crypto.randomUUID(),
-    email: "admin@loopfuture.com",
-    role: "Administrador",
-    password: "LoopFuture2026!",
-    inviteStatus: "Ativo",
-    inviteSentAt: new Date(Date.now() - 1000 * 60 * 60 * 120).toISOString(),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 120).toISOString()
-  },
-  {
-    id: crypto.randomUUID(),
-    email: "inovacao@loopfuture.com",
-    role: "Gestor de ideias",
-    password: "LoopFuture2026!",
-    inviteStatus: "Convite enviado",
-    inviteSentAt: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString(),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString()
-  }
-];
+const seedAccessList = [];
 
 let ideas = loadCollection(IDEAS_STORAGE_KEY, seedIdeas);
 let hackathons = loadCollection(HACKATHONS_STORAGE_KEY, seedHackathons);
+if (localStorage.getItem(ACCESS_SCHEMA_VERSION_KEY) !== "2") {
+  localStorage.removeItem(ACCESS_STORAGE_KEY);
+  localStorage.setItem(ACCESS_SCHEMA_VERSION_KEY, "2");
+}
 let accessList = loadCollection(ACCESS_STORAGE_KEY, seedAccessList);
 accessList = migrateAccessList(accessList);
 saveAccessList();
@@ -348,26 +338,13 @@ function generateTemporaryPassword() {
 }
 
 function migrateAccessList(list) {
-  const migrated = list.map((access) => ({
+  return list
+    .map((access) => ({
     ...access,
-    password: access.password || (access.email === "admin@loopfuture.com" ? "LoopFuture2026!" : generateTemporaryPassword()),
-    inviteStatus: access.inviteStatus || (access.email === "admin@loopfuture.com" ? "Ativo" : "Convite enviado"),
+    password: access.password || generateTemporaryPassword(),
+    inviteStatus: access.inviteStatus || "Convite enviado",
     inviteSentAt: access.inviteSentAt || access.createdAt || new Date().toISOString()
   }));
-
-  if (!migrated.some((access) => access.email === "admin@loopfuture.com")) {
-    migrated.unshift({
-      id: crypto.randomUUID(),
-      email: "admin@loopfuture.com",
-      role: "Administrador",
-      password: "LoopFuture2026!",
-      inviteStatus: "Ativo",
-      inviteSentAt: new Date().toISOString(),
-      createdAt: new Date().toISOString()
-    });
-  }
-
-  return migrated;
 }
 
 function saveIdeas() {
@@ -493,16 +470,16 @@ function applyLanguage() {
   els.grantAccessButton.textContent = t("actions.grantAccess");
   setSelectLabels("accessRole", Object.keys(translations.pt.options.roles).map((role) => optionLabel("roles", role)));
 
+  const setupMode = accessList.length === 0;
   setText("#authScreen .eyebrow", t("auth.eyebrow"));
-  setText("#authTitle", t("auth.title"));
-  setText(".auth-copy", t("auth.copy"));
+  setText("#authTitle", setupMode ? t("auth.setupTitle") : t("auth.title"));
+  setText(".auth-copy", setupMode ? t("auth.setupCopy") : t("auth.copy"));
   setFieldLabel("loginEmail", t("access.email"));
   setFieldLabel("loginPassword", t("auth.password"));
   setPlaceholder("#loginEmail", "nome@loopfuture.com");
-  setPlaceholder("#loginPassword", t("auth.passwordPlaceholder"));
-  setText("#loginError", t("auth.error"));
-  setText("#loginForm .primary-button", t("actions.signIn"));
-  setText(".auth-demo", t("auth.demo"));
+  setPlaceholder("#loginPassword", setupMode ? t("auth.setupPasswordPlaceholder") : t("auth.passwordPlaceholder"));
+  setText("#loginError", setupMode ? t("auth.setupError") : t("auth.error"));
+  setText("#loginForm .primary-button", setupMode ? t("actions.grantAccess") : t("actions.signIn"));
 
   setText("#ideaModal .eyebrow", t("ideaForm.eyebrow"));
   setText("#ideaModalTitle", t("ideaForm.title"));
@@ -965,21 +942,35 @@ function login(event) {
   event.preventDefault();
   const email = els.loginEmail.value.trim().toLowerCase();
   const password = els.loginPassword.value;
-  let user = accessList.find((access) => access.email === email && access.password === password);
 
-  if (!user && email === "admin@loopfuture.com" && password === "LoopFuture2026!") {
-    user = {
+  if (accessList.length === 0) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length < 8) {
+      els.loginError.classList.remove("hidden");
+      return;
+    }
+
+    const user = {
       id: crypto.randomUUID(),
-      email: "admin@loopfuture.com",
+      email,
       role: "Administrador",
-      password: "LoopFuture2026!",
+      password,
       inviteStatus: "Ativo",
       inviteSentAt: new Date().toISOString(),
       createdAt: new Date().toISOString()
     };
-    accessList.unshift(user);
+    accessList.push(user);
     saveAccessList();
+    currentUserEmail = user.email;
+    sessionStorage.setItem(SESSION_STORAGE_KEY, currentUserEmail);
+    els.loginForm.reset();
+    applyLanguage();
+    updateAuthState();
+    showToast(t("messages.adminCreated"));
+    setView("home");
+    return;
   }
+
+  const user = accessList.find((access) => access.email === email && access.password === password);
 
   if (!user) {
     els.loginError.classList.remove("hidden");

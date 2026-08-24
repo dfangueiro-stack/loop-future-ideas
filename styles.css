@@ -110,8 +110,7 @@ body:not(.auth-locked) .auth-screen {
   font-size: 1.85rem;
 }
 
-.auth-copy,
-.auth-demo {
+.auth-copy {
   color: var(--muted);
   line-height: 1.45;
 }
@@ -131,11 +130,6 @@ body:not(.auth-locked) .auth-screen {
   background: #fff0eb;
   font-size: 0.88rem;
   font-weight: 800;
-}
-
-.auth-demo {
-  margin: 16px 0 0;
-  font-size: 0.84rem;
 }
 
 .workspace {

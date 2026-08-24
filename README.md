@@ -6,11 +6,6 @@ Protótipo de uma plataforma interna de inovação para recolha de ideias, gest�
 
 Abrir `index.html` no browser ou publicar a pasta diretamente no GitHub Pages.
 
-## Acesso demo
-
-- Email: `admin@loopfuture.com`
-- Password: `LoopFuture2026!`
-
 ## Inclui
 
 - Login local com email e password temporária
