@@ -5,8 +5,9 @@ const ACCESS_SCHEMA_VERSION_KEY = "loopAccessSchema.v2";
 const LANGUAGE_STORAGE_KEY = "loopLanguage.v1";
 const SESSION_STORAGE_KEY = "loopSession.v1";
 
-const statusOrder = ["Nova", "Em análise", "Em piloto", "Implementada", "Arquivada"];
+const statusOrder = ["Pendente aprovação", "Nova", "Em análise", "Em piloto", "Implementada", "Arquivada"];
 const statusClass = {
+  "Pendente aprovação": "pending",
   "Nova": "",
   "Em análise": "review",
   "Em piloto": "pilot",
@@ -28,6 +29,9 @@ const translations = {
       signIn: "Entrar",
       signOut: "Sair",
       copyInvite: "Copiar convite",
+      approve: "Aprovar",
+      delete: "Eliminar",
+      createChallenge: "Criar desafio",
       remove: "Remover",
       save: "Guardar",
       viewDetail: "Ver detalhe"
@@ -39,7 +43,7 @@ const translations = {
       heroNote: "Submissão curta, visibilidade imediata e acompanhamento claro até à decisão.",
       ideas: "ideias",
       pilot: "em piloto",
-      support: "apoios",
+      pending: "pendentes",
       participants: "participantes",
       noIdeasFilter: "Sem ideias para estes filtros.",
       noHackathons: "Ainda não existem hackathons criadas.",
@@ -58,14 +62,14 @@ const translations = {
       activeAccess: "acessos ativos",
       topIdea: "Ideia em destaque",
       noIdeas: "Ainda sem ideias",
-      topIdeaHelp: "As ideias mais apoiadas aparecem aqui.",
+      topIdeaHelp: "As ideias aprovadas mais recentes aparecem aqui.",
       activeHackathon: "Hackathon ativa",
       noHackathons: "Ainda sem hackathons",
       hackathonHelp: "Quando criares uma hackathon, o resumo aparece aqui.",
       quickActions: "Ações rápidas"
     },
     filters: { search: "Pesquisar", searchPlaceholder: "Título, área ou benefício", status: "Estado", sort: "Ordenar" },
-    hackathons: { program: "Programas de inovação", created: "Hackathons criadas", open: "Aberta", rulesDefined: "Regulamento definido", invitesSent: "Convites enviados", invitesPending: "Convites pendentes" },
+    hackathons: { program: "Programas de inovação", created: "Hackathons criadas", open: "Aberta", pending: "Pendente aprovação", challenge: "Desafio", rulesDefined: "Regulamento definido", invitesSent: "Convites enviados", invitesPending: "Convites pendentes", jury: "Júri", rules: "Regras", challengePrompt: "Desafio" },
     access: { permissions: "Permissões", title: "Gestão de acessos", email: "Email", role: "Perfil" },
     auth: {
       eyebrow: "Future Box",
@@ -87,6 +91,8 @@ const translations = {
       ideaTitle: "Título da ideia",
       ideaTitlePlaceholder: "Ex.: Automatizar validação de relatórios",
       area: "Área",
+      areaOther: "Indicar área",
+      areaOtherPlaceholder: "Indica a área",
       type: "Tipo",
       problem: "Problema atual",
       problemPlaceholder: "O que está a criar desperdício, atrito ou oportunidade perdida?",
@@ -114,27 +120,35 @@ const translations = {
       image: "Logo / foto",
       addImage: "Adicionar imagem",
       participants: "Participantes",
-      participantPlaceholder: "email@loopfuture.com"
+      participantPlaceholder: "email@loopfuture.com",
+      jury: "Júri",
+      juryName: "Nome",
+      juryPhone: "Telefone",
+      juryEmail: "Email"
     },
-    detail: { area: "Área", type: "Tipo", benefit: "Benefício", votes: "Apoios", impact: "Impacto", effort: "Esforço", problem: "Problema atual", solution: "Melhoria proposta", comments: "Comentários", newComment: "Novo comentário", commentPlaceholder: "Nota de avaliação" },
-    status: { "Nova": "Nova", "Em análise": "Em análise", "Em piloto": "Em piloto", "Implementada": "Implementada", "Arquivada": "Arquivada" },
+    challengeForm: { eyebrow: "Novo desafio", title: "Criar desafio para colaboradores.", challenge: "Desafio", challengePlaceholder: "Que questão queres lançar aos colaboradores?", startDate: "Data de início", endDate: "Data de fim" },
+    detail: { area: "Área", type: "Tipo", benefit: "Benefício", impact: "Impacto", effort: "Esforço", problem: "Problema atual", solution: "Melhoria proposta", comments: "Comentários", newComment: "Novo comentário", commentPlaceholder: "Nota de avaliação" },
+    status: { "Pendente aprovação": "Pendente aprovação", "Nova": "Nova", "Em análise": "Em análise", "Em piloto": "Em piloto", "Implementada": "Implementada", "Arquivada": "Arquivada" },
     options: {
-      all: "Todos", recent: "Recentes", votes: "Mais apoiadas", impact: "Impacto", select: "Selecionar",
-      areas: { "Operações": "Operações", "Comercial": "Comercial", "Cliente": "Cliente", "Tecnologia": "Tecnologia", "Pessoas": "Pessoas", "Financeiro": "Financeiro" },
+      all: "Todos", recent: "Recentes", impact: "Impacto", select: "Selecionar",
+      areas: { "Operações": "Operações", "Comercial": "Comercial", "Cliente": "Cliente", "Tecnologia": "Tecnologia", "Pessoas": "Pessoas", "Financeiro": "Financeiro", "Outro": "Outro" },
       types: { "Melhoria de processo": "Melhoria de processo", "Nova oportunidade": "Nova oportunidade", "Automação": "Automação", "Inovação": "Inovação", "Experiência do cliente": "Experiência do cliente", "Bem-estar interno": "Bem-estar interno", "Outro": "Outro" },
       benefits: { "Poupa tempo": "Poupa tempo", "Reduz erros": "Reduz erros", "Melhora cliente": "Melhora cliente", "Aumenta receita": "Aumenta receita", "Melhora equipa": "Melhora equipa", "Outro": "Outro" },
       roles: { "Administrador": "Administrador", "Gestor de ideias": "Gestor de ideias", "Dinamizador hackathons": "Dinamizador hackathons", "Leitor": "Leitor" }
     },
     messages: {
       ideaSubmitted: "Ideia submetida.",
-      supportRegistered: "Apoio registado.",
+      ideaPending: "Ideia submetida para aprovação.",
+      itemApproved: "Aprovado e publicado.",
+      itemDeleted: "Eliminado.",
       ideaUpdated: "Ideia atualizada.",
       exportCreated: "Exportação criada.",
       teamsCopied: "Mensagem Teams copiada.",
       invalidEmail: "Insere um email válido.",
       duplicateParticipant: "Esse participante já foi adicionado.",
       addParticipant: "Adiciona pelo menos um participante.",
-      hackathonCreated: "Hackathon criada e convites enviados.",
+      hackathonCreated: "Hackathon criada para aprovação e convites preparados.",
+      challengeCreated: "Desafio criado para aprovação.",
       endAfterStart: "A data de fim deve ser posterior à data de início.",
       accessRemoved: "Acesso removido.",
       accessUpdated: "Perfil atualizado.",
@@ -149,25 +163,26 @@ const translations = {
   en: {
     nav: { home: "Home", explore: "Ideas", hackathons: "Hackathons", manage: "Management" },
     views: { home: "Home", explore: "Explore ideas", hackathons: "Hackathons", manage: "Idea management" },
-    actions: { submitIdea: "Submit idea", newHackathon: "New hackathon", createHackathon: "Create hackathon", clear: "Clear", add: "Add", grantAccess: "Grant access", signIn: "Sign in", signOut: "Sign out", copyInvite: "Copy invite", remove: "Remove", save: "Save", viewDetail: "View detail" },
-    common: { innovationBox: "Innovation box", futureBox: "Future Box", heroTitle: "A small idea can change an entire process.", heroNote: "Short submission, immediate visibility, and clear follow-up through to decision.", ideas: "ideas", pilot: "in pilot", support: "supports", participants: "participants", noIdeasFilter: "No ideas match these filters.", noHackathons: "No hackathons created yet.", noAccess: "No access has been assigned yet.", noDetail: "Select an idea to review details, comments, and status.", since: "since", definedDates: "Dates to be defined", start: "Start", end: "End" },
-    home: { summary: "General summary", pulse: "The innovation pulse of Loop Future.", registeredIdeas: "registered ideas", createdHackathons: "created hackathons", activeAccess: "active accesses", topIdea: "Featured idea", noIdeas: "No ideas yet", topIdeaHelp: "The most supported ideas appear here.", activeHackathon: "Active hackathon", noHackathons: "No hackathons yet", hackathonHelp: "When you create a hackathon, the summary appears here.", quickActions: "Quick actions" },
+    actions: { submitIdea: "Submit idea", newHackathon: "New hackathon", createHackathon: "Create hackathon", clear: "Clear", add: "Add", grantAccess: "Grant access", signIn: "Sign in", signOut: "Sign out", copyInvite: "Copy invite", approve: "Approve", delete: "Delete", createChallenge: "Create challenge", remove: "Remove", save: "Save", viewDetail: "View detail" },
+    common: { innovationBox: "Innovation box", futureBox: "Future Box", heroTitle: "A small idea can change an entire process.", heroNote: "Short submission, immediate visibility, and clear follow-up through to decision.", ideas: "ideas", pilot: "in pilot", pending: "pending", participants: "participants", noIdeasFilter: "No ideas match these filters.", noHackathons: "No hackathons created yet.", noAccess: "No access has been assigned yet.", noDetail: "Select an idea to review details, comments, and status.", since: "since", definedDates: "Dates to be defined", start: "Start", end: "End" },
+    home: { summary: "General summary", pulse: "The innovation pulse of Loop Future.", registeredIdeas: "registered ideas", createdHackathons: "created hackathons", activeAccess: "active accesses", topIdea: "Featured idea", noIdeas: "No ideas yet", topIdeaHelp: "The latest approved ideas appear here.", activeHackathon: "Active hackathon", noHackathons: "No hackathons yet", hackathonHelp: "When you create a hackathon, the summary appears here.", quickActions: "Quick actions" },
     filters: { search: "Search", searchPlaceholder: "Title, area, or benefit", status: "Status", sort: "Sort" },
-    hackathons: { program: "Innovation programs", created: "Created hackathons", open: "Open", rulesDefined: "Rules defined", invitesSent: "Invites sent", invitesPending: "Invites pending" },
+    hackathons: { program: "Innovation programs", created: "Created hackathons", open: "Open", pending: "Pending approval", challenge: "Challenge", rulesDefined: "Rules defined", invitesSent: "Invites sent", invitesPending: "Invites pending", jury: "Jury", rules: "Rules", challengePrompt: "Challenge" },
     access: { permissions: "Permissions", title: "Access management", email: "Email", role: "Role" },
     auth: { eyebrow: "Future Box", title: "Sign in to the platform", setupTitle: "Create first administrator", copy: "Use the invited email and temporary password sent by the management team.", setupCopy: "Set the first administrator access to start using the platform.", password: "Password", passwordPlaceholder: "Temporary password", setupPasswordPlaceholder: "Set a password", error: "Invalid email or password.", setupError: "Enter a valid email and a password with at least 8 characters.", userPrefix: "Session", accessHelp: "Granting access generates a temporary password and an invitation to send to the user." },
-    ideaForm: { eyebrow: "Quick draft", title: "Share the essentials.", ideaTitle: "Idea title", ideaTitlePlaceholder: "E.g. Automate report validation", area: "Area", type: "Type", problem: "Current problem", problemPlaceholder: "What is creating waste, friction, or a missed opportunity?", solution: "Proposed improvement", solutionPlaceholder: "How would you imagine the solution?", benefit: "Expected benefit", typeOther: "Specify type", typeOtherPlaceholder: "Enter the type", benefitOther: "Specify benefit", benefitOtherPlaceholder: "Enter the benefit", author: "Author", authorPlaceholder: "Name or team" },
-    hackathonForm: { eyebrow: "New hackathon", title: "Create a collaborative challenge.", name: "Name", namePlaceholder: "E.g. Operational Efficiency Hackathon", goal: "Objective", goalPlaceholder: "What problem or opportunity should this hackathon address?", startDate: "Start date", endDate: "End date", rules: "Rules / regulation", rulesPlaceholder: "Participation criteria, timeline, evaluation, deliverables, and main rules.", image: "Logo / photo", addImage: "Add image", participants: "Participants", participantPlaceholder: "email@loopfuture.com" },
-    detail: { area: "Area", type: "Type", benefit: "Benefit", votes: "Supports", impact: "Impact", effort: "Effort", problem: "Current problem", solution: "Proposed improvement", comments: "Comments", newComment: "New comment", commentPlaceholder: "Evaluation note" },
-    status: { "Nova": "New", "Em análise": "Under review", "Em piloto": "In pilot", "Implementada": "Implemented", "Arquivada": "Archived" },
+    ideaForm: { eyebrow: "Quick draft", title: "Share the essentials.", ideaTitle: "Idea title", ideaTitlePlaceholder: "E.g. Automate report validation", area: "Area", areaOther: "Specify area", areaOtherPlaceholder: "Enter the area", type: "Type", problem: "Current problem", problemPlaceholder: "What is creating waste, friction, or a missed opportunity?", solution: "Proposed improvement", solutionPlaceholder: "How would you imagine the solution?", benefit: "Expected benefit", typeOther: "Specify type", typeOtherPlaceholder: "Enter the type", benefitOther: "Specify benefit", benefitOtherPlaceholder: "Enter the benefit", author: "Author", authorPlaceholder: "Name or team" },
+    hackathonForm: { eyebrow: "New hackathon", title: "Create a collaborative challenge.", name: "Name", namePlaceholder: "E.g. Operational Efficiency Hackathon", goal: "Objective", goalPlaceholder: "What problem or opportunity should this hackathon address?", startDate: "Start date", endDate: "End date", rules: "Rules / regulation", rulesPlaceholder: "Participation criteria, timeline, evaluation, deliverables, and main rules.", image: "Logo / photo", addImage: "Add image", participants: "Participants", participantPlaceholder: "email@loopfuture.com", jury: "Jury", juryName: "Name", juryPhone: "Phone", juryEmail: "Email" },
+    challengeForm: { eyebrow: "New challenge", title: "Create employee challenge.", challenge: "Challenge", challengePlaceholder: "What question do you want to launch to employees?", startDate: "Start date", endDate: "End date" },
+    detail: { area: "Area", type: "Type", benefit: "Benefit", impact: "Impact", effort: "Effort", problem: "Current problem", solution: "Proposed improvement", comments: "Comments", newComment: "New comment", commentPlaceholder: "Evaluation note" },
+    status: { "Pendente aprovação": "Pending approval", "Nova": "New", "Em análise": "Under review", "Em piloto": "In pilot", "Implementada": "Implemented", "Arquivada": "Archived" },
     options: {
-      all: "All", recent: "Recent", votes: "Most supported", impact: "Impact", select: "Select",
-      areas: { "Operações": "Operations", "Comercial": "Commercial", "Cliente": "Customer", "Tecnologia": "Technology", "Pessoas": "People", "Financeiro": "Finance" },
+      all: "All", recent: "Recent", impact: "Impact", select: "Select",
+      areas: { "Operações": "Operations", "Comercial": "Commercial", "Cliente": "Customer", "Tecnologia": "Technology", "Pessoas": "People", "Financeiro": "Finance", "Outro": "Other" },
       types: { "Melhoria de processo": "Process improvement", "Nova oportunidade": "New opportunity", "Automação": "Automation", "Inovação": "Innovation", "Experiência do cliente": "Customer experience", "Bem-estar interno": "Internal wellbeing", "Outro": "Other" },
       benefits: { "Poupa tempo": "Saves time", "Reduz erros": "Reduces errors", "Melhora cliente": "Improves customer", "Aumenta receita": "Increases revenue", "Melhora equipa": "Improves team", "Outro": "Other" },
       roles: { "Administrador": "Administrator", "Gestor de ideias": "Idea manager", "Dinamizador hackathons": "Hackathon facilitator", "Leitor": "Reader" }
     },
-    messages: { ideaSubmitted: "Idea submitted.", supportRegistered: "Support registered.", ideaUpdated: "Idea updated.", exportCreated: "Export created.", teamsCopied: "Teams message copied.", invalidEmail: "Enter a valid email.", duplicateParticipant: "That participant has already been added.", addParticipant: "Add at least one participant.", hackathonCreated: "Hackathon created and invites sent.", endAfterStart: "End date must be after start date.", accessRemoved: "Access removed.", accessUpdated: "Role updated.", accessGranted: "Access granted.", inviteCopied: "Invite copied.", adminCreated: "Administrator created.", signedIn: "Signed in.", signedOut: "Signed out." }
+    messages: { ideaSubmitted: "Idea submitted.", ideaPending: "Idea submitted for approval.", itemApproved: "Approved and published.", itemDeleted: "Deleted.", ideaUpdated: "Idea updated.", exportCreated: "Export created.", teamsCopied: "Teams message copied.", invalidEmail: "Enter a valid email.", duplicateParticipant: "That participant has already been added.", addParticipant: "Add at least one participant.", hackathonCreated: "Hackathon created for approval and invites prepared.", challengeCreated: "Challenge created for approval.", endAfterStart: "End date must be after start date.", accessRemoved: "Access removed.", accessUpdated: "Role updated.", accessGranted: "Access granted.", inviteCopied: "Invite copied.", adminCreated: "Administrator created.", signedIn: "Signed in.", signedOut: "Signed out." }
   }
 };
 
@@ -185,7 +200,6 @@ const seedIdeas = [
     author: "Equipa Comercial",
     anonymous: false,
     status: "Em análise",
-    votes: 9,
     impact: 4,
     effort: 2,
     comments: [{ author: "Inovação", text: "Boa candidata a piloto com um template único." }],
@@ -202,7 +216,6 @@ const seedIdeas = [
     author: "Anónimo",
     anonymous: true,
     status: "Em piloto",
-    votes: 14,
     impact: 5,
     effort: 3,
     comments: [{ author: "PMO", text: "Piloto em dois projetos durante este mês." }],
@@ -219,7 +232,6 @@ const seedIdeas = [
     author: "People Team",
     anonymous: false,
     status: "Implementada",
-    votes: 18,
     impact: 4,
     effort: 1,
     comments: [{ author: "People", text: "Primeira leitura partilhada na reunião mensal." }],
@@ -246,6 +258,10 @@ const seedAccessList = [];
 
 let ideas = loadCollection(IDEAS_STORAGE_KEY, seedIdeas);
 let hackathons = loadCollection(HACKATHONS_STORAGE_KEY, seedHackathons);
+ideas = migrateIdeas(ideas);
+hackathons = migrateHackathons(hackathons);
+saveIdeas();
+saveHackathons();
 if (localStorage.getItem(ACCESS_SCHEMA_VERSION_KEY) !== "2") {
   localStorage.removeItem(ACCESS_STORAGE_KEY);
   localStorage.setItem(ACCESS_SCHEMA_VERSION_KEY, "2");
@@ -254,8 +270,10 @@ let accessList = loadCollection(ACCESS_STORAGE_KEY, seedAccessList);
 accessList = migrateAccessList(accessList);
 saveAccessList();
 let selectedIdeaId = ideas[0]?.id || null;
+let selectedHackathonId = hackathons[0]?.id || null;
 let pendingParticipants = [];
 let pendingHackathonImage = "";
+let pendingJury = [];
 let currentUserEmail = sessionStorage.getItem(SESSION_STORAGE_KEY) || "";
 
 const els = {
@@ -270,11 +288,16 @@ const els = {
   viewTitle: document.getElementById("viewTitle"),
   ideaModal: document.getElementById("ideaModal"),
   hackathonModal: document.getElementById("hackathonModal"),
+  challengeModal: document.getElementById("challengeModal"),
   openIdeaModalButton: document.getElementById("openIdeaModalButton"),
   openHackathonModalButton: document.getElementById("openHackathonModalButton"),
   openHackathonModalButtonInline: document.getElementById("openHackathonModalButtonInline"),
+  openChallengeModalButton: document.getElementById("openChallengeModalButton"),
   form: document.getElementById("ideaForm"),
   clearFormButton: document.getElementById("clearFormButton"),
+  ideaArea: document.getElementById("ideaArea"),
+  ideaAreaOtherField: document.getElementById("ideaAreaOtherField"),
+  ideaAreaOther: document.getElementById("ideaAreaOther"),
   ideaType: document.getElementById("ideaType"),
   ideaTypeOtherField: document.getElementById("ideaTypeOtherField"),
   ideaTypeOther: document.getElementById("ideaTypeOther"),
@@ -284,9 +307,17 @@ const els = {
   authorInput: document.getElementById("ideaAuthor"),
   hackathonForm: document.getElementById("hackathonForm"),
   clearHackathonButton: document.getElementById("clearHackathonButton"),
+  challengeForm: document.getElementById("challengeForm"),
+  clearChallengeButton: document.getElementById("clearChallengeButton"),
+  challengeText: document.getElementById("challengeText"),
   participantEmail: document.getElementById("participantEmail"),
   addParticipantButton: document.getElementById("addParticipantButton"),
   participantList: document.getElementById("participantList"),
+  juryName: document.getElementById("juryName"),
+  juryPhone: document.getElementById("juryPhone"),
+  juryEmail: document.getElementById("juryEmail"),
+  addJuryButton: document.getElementById("addJuryButton"),
+  juryList: document.getElementById("juryList"),
   hackathonImage: document.getElementById("hackathonImage"),
   hackathonImageLabel: document.getElementById("hackathonImageLabel"),
   hackathonImagePreview: document.getElementById("hackathonImagePreview"),
@@ -295,7 +326,9 @@ const els = {
   grantAccessButton: document.getElementById("grantAccessButton"),
   accessList: document.getElementById("accessList"),
   ideasGrid: document.getElementById("ideasGrid"),
+  ideaDetailPanel: document.getElementById("ideaDetailPanel"),
   hackathonsGrid: document.getElementById("hackathonsGrid"),
+  hackathonDetailPanel: document.getElementById("hackathonDetailPanel"),
   searchInput: document.getElementById("searchInput"),
   statusFilter: document.getElementById("statusFilter"),
   sortSelect: document.getElementById("sortSelect"),
@@ -344,6 +377,26 @@ function migrateAccessList(list) {
     password: access.password || generateTemporaryPassword(),
     inviteStatus: access.inviteStatus || "Convite enviado",
     inviteSentAt: access.inviteSentAt || access.createdAt || new Date().toISOString()
+  }));
+}
+
+function migrateIdeas(list) {
+  return list.map((idea) => ({
+    ...idea,
+    status: idea.status || "Nova",
+    authorEmail: idea.authorEmail || "",
+    published: idea.published ?? idea.status !== "Pendente aprovação"
+  }));
+}
+
+function migrateHackathons(list) {
+  return list.map((hackathon) => ({
+    ...hackathon,
+    type: hackathon.type || "hackathon",
+    status: hackathon.status || "Nova",
+    creatorEmail: hackathon.creatorEmail || "",
+    published: hackathon.published ?? hackathon.status !== "Pendente aprovação",
+    jury: Array.isArray(hackathon.jury) ? hackathon.jury : []
   }));
 }
 
@@ -435,7 +488,7 @@ function applyLanguage() {
   setText(".hero-note", t("common.heroNote"));
   document.querySelectorAll(".hero-stats span")[0].textContent = t("common.ideas");
   document.querySelectorAll(".hero-stats span")[1].textContent = t("common.pilot");
-  document.querySelectorAll(".hero-stats span")[2].textContent = t("common.support");
+  document.querySelectorAll(".hero-stats span")[2].textContent = t("common.pending");
 
   setText(".sidebar-panel .metric-label", currentLanguage === "pt" ? "Ideias implementadas" : "Implemented ideas");
   setText(".sidebar-panel span", currentLanguage === "pt" ? "desde o lançamento" : "since launch");
@@ -456,11 +509,12 @@ function applyLanguage() {
   setText("#exploreView .compact-field:nth-of-type(2) span", t("filters.status"));
   setText("#exploreView .compact-field:nth-of-type(3) span", t("filters.sort"));
   setSelectLabels("statusFilter", [t("options.all"), ...statusOrder.map(labelForStatus)]);
-  setSelectLabels("sortSelect", [t("options.recent"), t("options.votes"), t("options.impact")]);
+  setSelectLabels("sortSelect", [t("options.recent"), t("options.impact")]);
 
   setText("#hackathonsView .eyebrow", t("hackathons.program"));
   setText("#hackathonsView h3", t("hackathons.created"));
   els.openHackathonModalButtonInline.textContent = t("actions.createHackathon");
+  els.openChallengeModalButton.textContent = t("actions.createChallenge");
 
   setText(".access-panel .eyebrow", t("access.permissions"));
   setText(".access-panel h3", t("access.title"));
@@ -486,6 +540,8 @@ function applyLanguage() {
   setFieldLabel("ideaTitle", t("ideaForm.ideaTitle"));
   setPlaceholder("#ideaTitle", t("ideaForm.ideaTitlePlaceholder"));
   setFieldLabel("ideaArea", t("ideaForm.area"));
+  setFieldLabel("ideaAreaOther", t("ideaForm.areaOther"));
+  setPlaceholder("#ideaAreaOther", t("ideaForm.areaOtherPlaceholder"));
   setFieldLabel("ideaType", t("ideaForm.type"));
   setFieldLabel("ideaProblem", t("ideaForm.problem"));
   setPlaceholder("#ideaProblem", t("ideaForm.problemPlaceholder"));
@@ -518,9 +574,23 @@ function applyLanguage() {
   document.querySelector("#hackathonImage").closest(".field").querySelector("span").textContent = t("hackathonForm.image");
   document.querySelector("#participantEmail").closest(".field").querySelector("span").textContent = t("hackathonForm.participants");
   setPlaceholder("#participantEmail", t("hackathonForm.participantPlaceholder"));
+  document.querySelector("#juryName").closest(".field").querySelector("span").textContent = t("hackathonForm.jury");
+  setPlaceholder("#juryName", t("hackathonForm.juryName"));
+  setPlaceholder("#juryPhone", t("hackathonForm.juryPhone"));
+  setPlaceholder("#juryEmail", t("hackathonForm.juryEmail"));
   els.addParticipantButton.textContent = t("actions.add");
+  els.addJuryButton.textContent = t("actions.add");
   document.querySelector("#hackathonForm .primary-button").textContent = t("actions.createHackathon");
   document.querySelector("#clearHackathonButton").textContent = t("actions.clear");
+
+  setText("#challengeModal .eyebrow", t("challengeForm.eyebrow"));
+  setText("#challengeModalTitle", t("challengeForm.title"));
+  setFieldLabel("challengeText", t("challengeForm.challenge"));
+  setPlaceholder("#challengeText", t("challengeForm.challengePlaceholder"));
+  setFieldLabel("challengeStartDate", t("challengeForm.startDate"));
+  setFieldLabel("challengeEndDate", t("challengeForm.endDate"));
+  document.querySelector("#challengeForm .primary-button").textContent = t("actions.createChallenge");
+  document.querySelector("#clearChallengeButton").textContent = t("actions.clear");
 }
 
 function setView(view) {
@@ -531,6 +601,8 @@ function setView(view) {
   els.openIdeaModalButton.classList.toggle("hidden", view !== "explore");
   els.openHackathonModalButton.classList.add("hidden");
   els.exportButton.classList.toggle("hidden", view !== "manage");
+  if (view !== "explore") els.ideaDetailPanel.classList.add("hidden");
+  if (view !== "hackathons") els.hackathonDetailPanel.classList.add("hidden");
   applyLanguage();
   renderAll();
 }
@@ -549,22 +621,23 @@ function getFilteredIdeas() {
   const query = els.searchInput.value.trim().toLowerCase();
   const status = els.statusFilter.value;
   const sorted = [...ideas].filter((idea) => {
+    const visible = isPublicItem(idea) || canManageIdea(idea);
     const matchesStatus = status === "all" || idea.status === status;
     const haystack = `${idea.title} ${idea.area} ${idea.type} ${idea.benefit} ${idea.problem} ${idea.solution}`.toLowerCase();
-    return matchesStatus && (!query || haystack.includes(query));
+    return visible && matchesStatus && (!query || haystack.includes(query));
   });
 
-  if (els.sortSelect.value === "votes") sorted.sort((a, b) => b.votes - a.votes);
   if (els.sortSelect.value === "impact") sorted.sort((a, b) => b.impact - a.impact);
   if (els.sortSelect.value === "recent") sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return sorted;
 }
 
 function renderStats() {
-  els.totalIdeas.textContent = ideas.length;
-  els.pilotIdeas.textContent = ideas.filter((idea) => idea.status === "Em piloto").length;
+  const visibleIdeas = ideas.filter((idea) => isPublicItem(idea) || canManageIdea(idea));
+  els.totalIdeas.textContent = visibleIdeas.length;
+  els.pilotIdeas.textContent = visibleIdeas.filter((idea) => idea.status === "Em piloto").length;
   els.implementedCount.textContent = ideas.filter((idea) => idea.status === "Implementada").length;
-  els.topVotes.textContent = ideas.reduce((max, idea) => Math.max(max, idea.votes), 0);
+  els.topVotes.textContent = [...ideas, ...hackathons].filter((item) => item.status === "Pendente aprovação" && (isAdmin() || isCreator(item.authorEmail || item.creatorEmail))).length;
 }
 
 function renderIdeas() {
@@ -583,10 +656,6 @@ function renderIdeas() {
     const status = card.querySelector(".status-pill");
     status.textContent = labelForStatus(idea.status);
     status.className = `status-pill ${statusClass[idea.status]}`;
-    const voteButton = card.querySelector(".vote-button");
-    voteButton.dataset.action = "vote";
-    voteButton.querySelector("span").textContent = idea.votes;
-    voteButton.addEventListener("click", () => voteIdea(idea.id));
     card.querySelector("h3").textContent = idea.title;
     card.querySelector(".idea-summary").textContent = idea.solution;
     card.querySelector(".card-meta").innerHTML = `
@@ -599,7 +668,7 @@ function renderIdeas() {
     detailButton.dataset.action = "detail";
     detailButton.addEventListener("click", () => {
       selectedIdeaId = idea.id;
-      setView("manage");
+      renderIdeaDetailPanel();
     });
     els.ideasGrid.appendChild(card);
   });
@@ -608,14 +677,16 @@ function renderIdeas() {
 function renderHackathons() {
   const template = document.getElementById("hackathonCardTemplate");
   els.hackathonsGrid.innerHTML = "";
+  const visibleItems = hackathons
+    .filter((item) => isPublicItem(item) || canManageHackathon(item))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  if (!hackathons.length) {
+  if (!visibleItems.length) {
     els.hackathonsGrid.innerHTML = `<p class="empty-state">${t("common.noHackathons")}</p>`;
     return;
   }
 
-  [...hackathons]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  visibleItems
     .forEach((hackathon) => {
       const card = template.content.firstElementChild.cloneNode(true);
       const media = card.querySelector(".hackathon-media");
@@ -623,22 +694,98 @@ function renderHackathons() {
         media.style.backgroundImage = `url("${hackathon.image}")`;
         media.textContent = "";
       } else {
-        media.textContent = hackathon.name.slice(0, 2).toUpperCase();
+        media.textContent = (hackathon.type === "challenge" ? "D" : hackathon.name.slice(0, 2)).toUpperCase();
       }
-      card.querySelector(".status-pill").textContent = t("hackathons.open");
+      card.querySelector(".status-pill").textContent = hackathon.status === "Pendente aprovação" ? t("hackathons.pending") : t("hackathons.open");
+      card.querySelector(".status-pill").className = `status-pill ${statusClass[hackathon.status] || ""}`;
       card.querySelector(".participant-count").textContent = `${hackathon.participants.length} ${t("common.participants")}`;
       card.querySelector("h3").textContent = hackathon.name;
       card.querySelector(".idea-summary").textContent = hackathon.goal;
-      const invitesSent = Boolean(hackathon.invitesSentAt || hackathon.participants.length);
+      const invitesSent = Boolean(hackathon.invitesSentAt);
       const dateText = formatDateRange(hackathon.startDate, hackathon.endDate);
       card.querySelector(".card-meta").innerHTML = `
+        <span class="meta-chip">${hackathon.type === "challenge" ? t("hackathons.challenge") : "Hackathon"}</span>
         <span class="meta-chip">${formatDate(hackathon.createdAt)}</span>
         <span class="meta-chip">${dateText ? escapeHtml(dateText) : t("common.definedDates")}</span>
-        <span class="meta-chip">${t("hackathons.rulesDefined")}</span>
+        <span class="meta-chip">${hackathon.jury?.length || 0} ${t("hackathons.jury")}</span>
         <span class="meta-chip">${invitesSent ? t("hackathons.invitesSent") : t("hackathons.invitesPending")}</span>
       `;
+      const detailButton = card.querySelector(".text-button");
+      detailButton.textContent = t("actions.viewDetail");
+      detailButton.addEventListener("click", () => {
+        selectedHackathonId = hackathon.id;
+        renderHackathonDetailPanel();
+      });
       els.hackathonsGrid.appendChild(card);
     });
+}
+
+function renderHackathonDetailPanel() {
+  const item = hackathons.find((hackathon) => hackathon.id === selectedHackathonId);
+  if (!item || (!isPublicItem(item) && !canManageHackathon(item))) {
+    els.hackathonDetailPanel.innerHTML = `<p class="empty-state">${t("common.noHackathons")}</p>`;
+    els.hackathonDetailPanel.classList.remove("hidden");
+    return;
+  }
+
+  const canApprove = isAdmin() && item.status === "Pendente aprovação";
+  const canDelete = canManageHackathon(item);
+  const jury = item.jury?.length
+    ? item.jury.map((member) => `<div class="comment"><small>${escapeHtml(member.name)} · ${escapeHtml(member.phone)}</small>${escapeHtml(member.email)}</div>`).join("")
+    : `<p class="empty-state">${currentLanguage === "pt" ? "Sem júri definido." : "No jury defined."}</p>`;
+
+  els.hackathonDetailPanel.innerHTML = `
+    <div class="detail-head">
+      <div>
+        <span class="status-pill ${statusClass[item.status]}">${escapeHtml(labelForStatus(item.status))}</span>
+        <h3>${escapeHtml(item.name)}</h3>
+        <p class="empty-state">${item.type === "challenge" ? t("hackathons.challenge") : "Hackathon"} · ${formatDateRange(item.startDate, item.endDate) || t("common.definedDates")}</p>
+      </div>
+      <div class="detail-actions">
+        ${canApprove ? `<button class="primary-button" data-action="approve-hackathon" type="button">${t("actions.approve")}</button>` : ""}
+        ${canDelete ? `<button class="danger-button" data-action="delete-hackathon" type="button">${t("actions.delete")}</button>` : ""}
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item"><strong>${item.type === "challenge" ? t("hackathons.challengePrompt") : t("hackathonForm.goal")}</strong>${escapeHtml(item.goal)}</div>
+      <div class="detail-item"><strong>${t("common.participants")}</strong>${item.participants.length}</div>
+      <div class="detail-item"><strong>${t("hackathons.jury")}</strong>${item.jury?.length || 0}</div>
+    </div>
+
+    <div class="detail-item"><strong>${t("hackathons.rules")}</strong>${escapeHtml(item.rules)}</div>
+    <h4>${t("hackathons.jury")}</h4>
+    <div class="comment-list">${jury}</div>
+  `;
+
+  els.hackathonDetailPanel.querySelector("[data-action='approve-hackathon']")?.addEventListener("click", () => approveHackathon(item.id));
+  els.hackathonDetailPanel.querySelector("[data-action='delete-hackathon']")?.addEventListener("click", () => deleteHackathon(item.id));
+  els.hackathonDetailPanel.classList.remove("hidden");
+  els.hackathonDetailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function approveHackathon(id) {
+  const item = hackathons.find((hackathon) => hackathon.id === id);
+  if (!item || !isAdmin()) return;
+  item.status = "Nova";
+  item.published = true;
+  if (item.participants.length && !item.invitesSentAt) item.invitesSentAt = new Date().toISOString();
+  saveHackathons();
+  showToast(t("messages.itemApproved"));
+  renderAll();
+  selectedHackathonId = id;
+  renderHackathonDetailPanel();
+}
+
+function deleteHackathon(id) {
+  const item = hackathons.find((hackathon) => hackathon.id === id);
+  if (!item || !canManageHackathon(item)) return;
+  hackathons = hackathons.filter((hackathon) => hackathon.id !== id);
+  if (selectedHackathonId === id) selectedHackathonId = hackathons[0]?.id || null;
+  els.hackathonDetailPanel.classList.add("hidden");
+  saveHackathons();
+  showToast(t("messages.itemDeleted"));
+  renderAll();
 }
 
 function renderAccessList() {
@@ -681,11 +828,12 @@ function renderAccessList() {
 
 function renderPipeline() {
   els.pipeline.innerHTML = "";
+  const reviewableIdeas = ideas.filter((idea) => isAdmin() || canManageIdea(idea));
 
   statusOrder.forEach((status) => {
-    const laneIdeas = ideas
+    const laneIdeas = reviewableIdeas
       .filter((idea) => idea.status === status)
-      .sort((a, b) => b.votes - a.votes);
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     if (!laneIdeas.length) return;
 
@@ -704,7 +852,7 @@ function renderPipeline() {
       button.type = "button";
       button.innerHTML = `
         <strong>${escapeHtml(idea.title)}</strong>
-        <span>${idea.votes} ${t("common.support")} · ${t("detail.impact")} ${idea.impact}/5 · ${escapeHtml(optionLabel("areas", idea.area))}</span>
+        <span>${t("detail.impact")} ${idea.impact}/5 · ${escapeHtml(optionLabel("areas", idea.area))}</span>
       `;
       button.addEventListener("click", () => {
         selectedIdeaId = idea.id;
@@ -719,37 +867,39 @@ function renderPipeline() {
 }
 
 function renderDetail() {
-  const idea = ideas.find((item) => item.id === selectedIdeaId);
+  renderIdeaDetail(els.detailPanel, selectedIdeaId, "manage");
+}
+
+function renderIdeaDetailPanel() {
+  renderIdeaDetail(els.ideaDetailPanel, selectedIdeaId, "explore");
+  els.ideaDetailPanel.classList.remove("hidden");
+  els.ideaDetailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderIdeaDetail(container, ideaId, context) {
+  const idea = ideas.find((item) => item.id === ideaId);
   if (!idea) {
-    els.detailPanel.innerHTML = `<p class="empty-state">${t("common.noDetail")}</p>`;
+    container.innerHTML = `<p class="empty-state">${t("common.noDetail")}</p>`;
+    return;
+  }
+
+  if (!isPublicItem(idea) && !canManageIdea(idea)) {
+    container.innerHTML = `<p class="empty-state">${t("common.noDetail")}</p>`;
     return;
   }
 
   const comments = idea.comments.length
     ? idea.comments.map((comment) => `<div class="comment"><small>${escapeHtml(comment.author)}</small>${escapeHtml(comment.text)}</div>`).join("")
     : `<p class="empty-state">${currentLanguage === "pt" ? "Sem comentários." : "No comments."}</p>`;
-
-  els.detailPanel.innerHTML = `
-    <span class="status-pill ${statusClass[idea.status]}">${escapeHtml(labelForStatus(idea.status))}</span>
-    <h3>${escapeHtml(idea.title)}</h3>
-    <p class="empty-state">${escapeHtml(idea.author)} · ${formatDate(idea.createdAt)}</p>
-
-    <div class="detail-grid">
-      <div class="detail-item"><strong>${t("detail.area")}</strong>${escapeHtml(optionLabel("areas", idea.area))}</div>
-      <div class="detail-item"><strong>${t("detail.type")}</strong>${escapeHtml(optionLabel("types", idea.type))}</div>
-      <div class="detail-item"><strong>${t("detail.benefit")}</strong>${escapeHtml(optionLabel("benefits", idea.benefit))}</div>
-      <div class="detail-item"><strong>${t("detail.votes")}</strong>${idea.votes}</div>
-      <div class="detail-item"><strong>${t("detail.impact")}</strong>${idea.impact}/5</div>
-      <div class="detail-item"><strong>${t("detail.effort")}</strong>${idea.effort}/5</div>
+  const canDelete = canManageIdea(idea);
+  const canApprove = isAdmin() && idea.status === "Pendente aprovação";
+  const managementActions = `
+    <div class="detail-actions">
+      ${canApprove ? `<button class="primary-button" data-action="approve-idea" type="button">${t("actions.approve")}</button>` : ""}
+      ${canDelete ? `<button class="danger-button" data-action="delete-idea" type="button">${t("actions.delete")}</button>` : ""}
     </div>
-
-    <div class="detail-item"><strong>${t("detail.problem")}</strong>${escapeHtml(idea.problem)}</div>
-    <br>
-    <div class="detail-item"><strong>${t("detail.solution")}</strong>${escapeHtml(idea.solution)}</div>
-
-    <h4>${t("detail.comments")}</h4>
-    <div class="comment-list">${comments}</div>
-
+  `;
+  const reviewActions = isAdmin() ? `
     <div class="review-actions">
       <label class="compact-field">
         <span>${t("filters.status")}</span>
@@ -763,12 +913,43 @@ function renderDetail() {
       </label>
       <button class="primary-button" id="saveDetailButton" type="button">${t("actions.save")}</button>
     </div>
+  ` : "";
+
+  container.innerHTML = `
+    <div class="detail-head">
+      <div>
+        <span class="status-pill ${statusClass[idea.status]}">${escapeHtml(labelForStatus(idea.status))}</span>
+        <h3>${escapeHtml(idea.title)}</h3>
+        <p class="empty-state">${escapeHtml(idea.author)} · ${formatDate(idea.createdAt)}</p>
+      </div>
+      ${managementActions}
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item"><strong>${t("detail.area")}</strong>${escapeHtml(optionLabel("areas", idea.area))}</div>
+      <div class="detail-item"><strong>${t("detail.type")}</strong>${escapeHtml(optionLabel("types", idea.type))}</div>
+      <div class="detail-item"><strong>${t("detail.benefit")}</strong>${escapeHtml(optionLabel("benefits", idea.benefit))}</div>
+      <div class="detail-item"><strong>${t("detail.impact")}</strong>${idea.impact}/5</div>
+      <div class="detail-item"><strong>${t("detail.effort")}</strong>${idea.effort}/5</div>
+    </div>
+
+    <div class="detail-item"><strong>${t("detail.problem")}</strong>${escapeHtml(idea.problem)}</div>
+    <br>
+    <div class="detail-item"><strong>${t("detail.solution")}</strong>${escapeHtml(idea.solution)}</div>
+
+    <h4>${t("detail.comments")}</h4>
+    <div class="comment-list">${comments}</div>
+
+    ${reviewActions}
   `;
 
-  document.getElementById("saveDetailButton").addEventListener("click", () => {
-    const nextStatus = document.getElementById("detailStatus").value;
-    const comment = document.getElementById("detailComment").value.trim();
+  container.querySelector("[data-action='approve-idea']")?.addEventListener("click", () => approveIdea(idea.id));
+  container.querySelector("[data-action='delete-idea']")?.addEventListener("click", () => deleteIdea(idea.id));
+  container.querySelector("#saveDetailButton")?.addEventListener("click", () => {
+    const nextStatus = container.querySelector("#detailStatus").value;
+    const comment = container.querySelector("#detailComment").value.trim();
     idea.status = nextStatus;
+    idea.published = nextStatus !== "Pendente aprovação";
     if (comment) idea.comments.push({ author: "Gestão", text: comment });
     saveIdeas();
     showToast(t("messages.ideaUpdated"));
@@ -776,12 +957,24 @@ function renderDetail() {
   });
 }
 
-function voteIdea(id) {
+function approveIdea(id) {
   const idea = ideas.find((item) => item.id === id);
-  if (!idea) return;
-  idea.votes += 1;
+  if (!idea || !isAdmin()) return;
+  idea.status = "Nova";
+  idea.published = true;
   saveIdeas();
-  showToast(t("messages.supportRegistered"));
+  showToast(t("messages.itemApproved"));
+  renderAll();
+}
+
+function deleteIdea(id) {
+  const idea = ideas.find((item) => item.id === id);
+  if (!idea || !canManageIdea(idea)) return;
+  ideas = ideas.filter((item) => item.id !== id);
+  if (selectedIdeaId === id) selectedIdeaId = ideas[0]?.id || null;
+  els.ideaDetailPanel.classList.add("hidden");
+  saveIdeas();
+  showToast(t("messages.itemDeleted"));
   renderAll();
 }
 
@@ -792,6 +985,11 @@ function getCustomOrSelected(formData, selectName, otherName) {
 }
 
 function toggleOtherFields() {
+  const areaIsOther = els.ideaArea.value === "Outro";
+  els.ideaAreaOtherField.classList.toggle("hidden", !areaIsOther);
+  els.ideaAreaOther.required = areaIsOther;
+  if (!areaIsOther) els.ideaAreaOther.value = "";
+
   const typeIsOther = els.ideaType.value === "Outro";
   els.ideaTypeOtherField.classList.toggle("hidden", !typeIsOther);
   els.ideaTypeOther.required = typeIsOther;
@@ -807,15 +1005,16 @@ function createIdea(formData) {
   return {
     id: crypto.randomUUID(),
     title: formData.get("title").trim(),
-    area: formData.get("area"),
+    area: getCustomOrSelected(formData, "area", "areaOther"),
     type: getCustomOrSelected(formData, "type", "typeOther"),
     problem: formData.get("problem").trim(),
     solution: formData.get("solution").trim(),
     benefit: getCustomOrSelected(formData, "benefit", "benefitOther"),
     author: formData.get("author").trim() || "Colaborador Loop",
+    authorEmail: currentUserEmail,
     anonymous: false,
-    status: "Nova",
-    votes: 0,
+    status: "Pendente aprovação",
+    published: false,
     impact: 3,
     effort: 2,
     comments: [],
@@ -826,14 +1025,40 @@ function createIdea(formData) {
 function createHackathon(formData) {
   return {
     id: crypto.randomUUID(),
+    type: "hackathon",
     name: formData.get("name").trim(),
     goal: formData.get("goal").trim(),
     rules: formData.get("rules").trim(),
     startDate: formData.get("startDate"),
     endDate: formData.get("endDate"),
     participants: [...pendingParticipants],
+    jury: [...pendingJury],
     image: pendingHackathonImage,
-    invitesSentAt: new Date().toISOString(),
+    creatorEmail: currentUserEmail,
+    status: "Pendente aprovação",
+    published: false,
+    invitesSentAt: "",
+    createdAt: new Date().toISOString()
+  };
+}
+
+function createChallenge(formData) {
+  const challenge = formData.get("challenge").trim();
+  return {
+    id: crypto.randomUUID(),
+    type: "challenge",
+    name: challenge.slice(0, 80),
+    goal: challenge,
+    rules: challenge,
+    startDate: formData.get("startDate"),
+    endDate: formData.get("endDate"),
+    participants: [],
+    jury: [],
+    image: "",
+    creatorEmail: currentUserEmail,
+    status: "Pendente aprovação",
+    published: false,
+    invitesSentAt: "",
     createdAt: new Date().toISOString()
   };
 }
@@ -851,16 +1076,16 @@ function renderHome() {
   homeHackathonsCount.textContent = hackathons.length;
   homeAccessCount.textContent = accessList.length;
 
-  const topIdea = [...ideas].sort((a, b) => b.votes - a.votes)[0];
+  const topIdea = [...ideas].filter(isPublicItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
   if (topIdea) {
     homeTopIdeaTitle.textContent = topIdea.title;
-    homeTopIdeaMeta.textContent = `${topIdea.votes} ${t("common.support")} · ${labelForStatus(topIdea.status)} · ${optionLabel("areas", topIdea.area)}`;
+    homeTopIdeaMeta.textContent = `${labelForStatus(topIdea.status)} · ${optionLabel("areas", topIdea.area)}`;
   } else {
     homeTopIdeaTitle.textContent = t("home.noIdeas");
     homeTopIdeaMeta.textContent = t("home.topIdeaHelp");
   }
 
-  const latestHackathon = [...hackathons].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+  const latestHackathon = [...hackathons].filter(isPublicItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
   if (latestHackathon) {
     homeHackathonTitle.textContent = latestHackathon.name;
     homeHackathonMeta.textContent = `${latestHackathon.participants.length} ${t("common.participants")} · ${latestHackathon.startDate ? formatDate(latestHackathon.startDate) : t("common.definedDates").toLowerCase()}`;
@@ -924,6 +1149,26 @@ async function copyInvite(access) {
 
 function getCurrentUser() {
   return accessList.find((access) => access.email === currentUserEmail);
+}
+
+function isAdmin() {
+  return getCurrentUser()?.role === "Administrador";
+}
+
+function isCreator(email) {
+  return Boolean(email && currentUserEmail && email === currentUserEmail);
+}
+
+function canManageIdea(idea) {
+  return isAdmin() || isCreator(idea.authorEmail);
+}
+
+function canManageHackathon(item) {
+  return isAdmin() || isCreator(item.creatorEmail);
+}
+
+function isPublicItem(item) {
+  return item.published && item.status !== "Pendente aprovação";
 }
 
 function updateAuthState() {
@@ -1008,6 +1253,26 @@ function addParticipant() {
   renderParticipants();
 }
 
+function addJuryMember() {
+  const name = els.juryName.value.trim();
+  const phone = els.juryPhone.value.trim();
+  const email = els.juryEmail.value.trim().toLowerCase();
+  if (!name && !phone && !email) return;
+  if (!name || !phone || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast(t("messages.invalidEmail"));
+    return;
+  }
+  if (pendingJury.some((member) => member.email === email)) {
+    showToast(t("messages.duplicateParticipant"));
+    return;
+  }
+  pendingJury.push({ name, phone, email });
+  els.juryName.value = "";
+  els.juryPhone.value = "";
+  els.juryEmail.value = "";
+  renderJury();
+}
+
 function renderParticipants() {
   els.participantList.innerHTML = "";
   pendingParticipants.forEach((email) => {
@@ -1023,14 +1288,35 @@ function renderParticipants() {
   });
 }
 
+function renderJury() {
+  els.juryList.innerHTML = "";
+  pendingJury.forEach((member) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "participant-chip";
+    chip.textContent = `${member.name} · ${member.email} ×`;
+    chip.addEventListener("click", () => {
+      pendingJury = pendingJury.filter((item) => item.email !== member.email);
+      renderJury();
+    });
+    els.juryList.appendChild(chip);
+  });
+}
+
 function resetHackathonForm() {
   els.hackathonForm.reset();
   pendingParticipants = [];
   pendingHackathonImage = "";
+  pendingJury = [];
   els.hackathonImageLabel.textContent = "Adicionar imagem";
   els.hackathonImagePreview.classList.add("hidden");
   els.hackathonImagePreview.style.backgroundImage = "";
   renderParticipants();
+  renderJury();
+}
+
+function resetChallengeForm() {
+  els.challengeForm.reset();
 }
 
 function renderAll() {
@@ -1041,6 +1327,8 @@ function renderAll() {
   renderAccessList();
   renderPipeline();
   renderDetail();
+  if (!els.ideaDetailPanel.classList.contains("hidden")) renderIdeaDetail(els.ideaDetailPanel, selectedIdeaId, "explore");
+  if (!els.hackathonDetailPanel.classList.contains("hidden")) renderHackathonDetailPanel();
 }
 
 function exportIdeas() {
@@ -1105,6 +1393,7 @@ els.logoutButton.addEventListener("click", logout);
 els.openIdeaModalButton.addEventListener("click", () => openModal("ideaModal"));
 els.openHackathonModalButton.addEventListener("click", () => openModal("hackathonModal"));
 els.openHackathonModalButtonInline.addEventListener("click", () => openModal("hackathonModal"));
+els.openChallengeModalButton.addEventListener("click", () => openModal("challengeModal"));
 document.getElementById("homeSubmitIdeaButton").addEventListener("click", () => openModal("ideaModal"));
 document.getElementById("homeCreateHackathonButton").addEventListener("click", () => openModal("hackathonModal"));
 document.querySelectorAll("[data-close-modal]").forEach((button) => {
@@ -1122,6 +1411,7 @@ els.sortSelect.addEventListener("change", renderIdeas);
 els.exportButton.addEventListener("click", exportIdeas);
 els.teamsButton.addEventListener("click", prepareTeamsMessage);
 els.addParticipantButton.addEventListener("click", addParticipant);
+els.addJuryButton.addEventListener("click", addJuryMember);
 els.grantAccessButton.addEventListener("click", grantAccess);
 els.accessEmail.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -1133,6 +1423,12 @@ els.participantEmail.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
     addParticipant();
+  }
+});
+els.juryEmail.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    addJuryMember();
   }
 });
 
@@ -1149,6 +1445,7 @@ els.hackathonImage.addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
+els.ideaArea.addEventListener("change", toggleOtherFields);
 els.ideaType.addEventListener("change", toggleOtherFields);
 els.ideaBenefit.addEventListener("change", toggleOtherFields);
 
@@ -1157,6 +1454,7 @@ els.clearFormButton.addEventListener("click", () => {
   toggleOtherFields();
 });
 els.clearHackathonButton.addEventListener("click", resetHackathonForm);
+els.clearChallengeButton.addEventListener("click", resetChallengeForm);
 
 els.form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -1167,7 +1465,7 @@ els.form.addEventListener("submit", (event) => {
   els.form.reset();
   toggleOtherFields();
   closeModal("ideaModal");
-  showToast(t("messages.ideaSubmitted"));
+  showToast(t("messages.ideaPending"));
   setView("explore");
 });
 
@@ -1184,6 +1482,7 @@ els.hackathonForm.addEventListener("submit", (event) => {
   }
   const hackathon = createHackathon(formData);
   hackathons.unshift(hackathon);
+  selectedHackathonId = hackathon.id;
   saveHackathons();
   resetHackathonForm();
   closeModal("hackathonModal");
@@ -1191,7 +1490,26 @@ els.hackathonForm.addEventListener("submit", (event) => {
   setView("hackathons");
 });
 
+els.challengeForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const formData = new FormData(els.challengeForm);
+  if (formData.get("endDate") < formData.get("startDate")) {
+    showToast(t("messages.endAfterStart"));
+    return;
+  }
+  const challenge = createChallenge(formData);
+  hackathons.unshift(challenge);
+  selectedHackathonId = challenge.id;
+  saveHackathons();
+  resetChallengeForm();
+  closeModal("challengeModal");
+  showToast(t("messages.challengeCreated"));
+  setView("hackathons");
+  renderHackathonDetailPanel();
+});
+
 renderParticipants();
+renderJury();
 toggleOtherFields();
 updateAuthState();
 setView("home");

@@ -11,7 +11,6 @@ Abrir `index.html` no browser ou publicar a pasta diretamente no GitHub Pages.
 - Login local com email e password temporária
 - Submissão rápida de ideias
 - Exploração, pesquisa e filtros
-- Votos de apoio
 - Hackathons com participantes e convite
 - Gestão de acessos com convite copiável
 - Gestão de estados

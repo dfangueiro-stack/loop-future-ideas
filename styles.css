@@ -764,6 +764,13 @@ textarea:focus {
   align-items: center;
 }
 
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .hackathon-toolbar h3 {
   margin-bottom: 0;
   font-size: 1.3rem;
@@ -843,6 +850,11 @@ textarea:focus {
   background: #fff0b9;
 }
 
+.status-pill.pending {
+  color: #5b4610;
+  background: #fff0b9;
+}
+
 .status-pill.pilot {
   color: #123e5d;
   background: #dbeef9;
@@ -856,25 +868,6 @@ textarea:focus {
 .status-pill.archived {
   color: #596269;
   background: #e9edef;
-}
-
-.vote-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-width: 60px;
-  min-height: 34px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--loop-blue-dark);
-  background: #ffffff;
-  font-weight: 900;
-}
-
-.vote-button:hover {
-  border-color: var(--loop-lilac);
-  background: var(--loop-blue-soft);
 }
 
 .idea-card h3 {
@@ -1076,6 +1069,39 @@ textarea:focus {
   padding: 20px;
 }
 
+.inline-detail {
+  margin-top: 16px;
+}
+
+.detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.danger-button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #ffd0c6;
+  border-radius: 8px;
+  color: #842f20;
+  background: #fff0eb;
+  font-weight: 900;
+}
+
+.danger-button:hover {
+  border-color: #e49584;
+  background: #ffe3db;
+}
+
 .detail-panel h3 {
   margin: 10px 0 8px;
   font-size: 1.5rem;
@@ -1125,7 +1151,7 @@ textarea:focus {
 
 .review-actions {
   display: grid;
-  grid-template-columns: minmax(140px, 210px) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(140px, 210px) minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: end;
   margin-top: 18px;
@@ -1195,6 +1221,12 @@ textarea:focus {
 .participant-entry {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.jury-entry {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(110px, 0.8fr) minmax(160px, 1.2fr) auto;
   gap: 8px;
 }
 
@@ -1324,8 +1356,14 @@ textarea:focus {
   .detail-grid,
   .review-actions,
   .access-controls,
-  .participant-entry {
+  .participant-entry,
+  .jury-entry {
     grid-template-columns: 1fr;
+  }
+
+  .toolbar-actions,
+  .detail-actions {
+    justify-content: stretch;
   }
 
   .home-card-main {
