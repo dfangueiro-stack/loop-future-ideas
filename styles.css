@@ -1131,6 +1131,13 @@ textarea:focus {
   text-transform: uppercase;
 }
 
+.detail-item code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--loop-blue-dark);
+  font-weight: 850;
+}
+
 .comment-list {
   display: grid;
   gap: 8px;
@@ -1147,6 +1154,43 @@ textarea:focus {
   display: block;
   margin-bottom: 4px;
   color: var(--muted);
+}
+
+.submission-panel {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.submission-list {
+  display: grid;
+  gap: 10px;
+}
+
+.submission-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcff;
+}
+
+.submission-card strong,
+.submission-card span {
+  display: block;
+}
+
+.submission-card span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.submission-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.45;
 }
 
 .review-actions {

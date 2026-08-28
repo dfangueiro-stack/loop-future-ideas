@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Loop Ideas</title>
-    <link rel="stylesheet" href="styles.css?v=11">
+    <title>Future Box | Loop Future</title>
+    <link rel="stylesheet" href="styles.css?v=12">
   </head>
   <body data-view="home" class="auth-locked">
     <section class="auth-screen" id="authScreen" aria-labelledby="authTitle">
@@ -37,7 +37,7 @@
             <div class="brand-logo-shell">
               <img src="assets/loop-future-logo.png" alt="Loop Future" class="brand-logo">
             </div>
-            <h1>Loop Ideas</h1>
+            <h1>Future Box</h1>
           </div>
 
           <nav class="nav-list" aria-label="Secções">
@@ -444,6 +444,42 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    <div class="modal-backdrop hidden" id="hackathonSubmissionModal" role="dialog" aria-modal="true" aria-labelledby="hackathonSubmissionTitle">
+      <section class="modal-panel">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Candidatura</p>
+            <h3 id="hackathonSubmissionTitle">Concorrer à hackathon.</h3>
+          </div>
+          <button class="icon-button" data-close-modal="hackathonSubmissionModal" type="button" aria-label="Fechar">×</button>
+        </div>
+
+        <form class="idea-form modal-form" id="hackathonSubmissionForm">
+          <div class="form-grid">
+            <label class="field field-wide">
+              <span>Nome da ideia</span>
+              <input id="hackathonSubmissionTitleInput" name="title" maxlength="90" required placeholder="Ex.: Solução para acelerar onboarding">
+            </label>
+
+            <label class="field field-wide">
+              <span>Proposta</span>
+              <textarea id="hackathonSubmissionProposal" name="proposal" rows="5" required placeholder="Descreve a proposta, impacto esperado e como seria testada."></textarea>
+            </label>
+
+            <label class="field">
+              <span>Equipa / autor</span>
+              <input id="hackathonSubmissionAuthor" name="author" maxlength="80" required placeholder="Nome, equipa ou participantes">
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-button" type="submit">Enviar candidatura</button>
+            <button class="secondary-button" id="clearHackathonSubmissionButton" type="button">Limpar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
     <template id="ideaCardTemplate">
       <article class="idea-card">
         <div class="card-header">
@@ -470,6 +506,6 @@
       </article>
     </template>
 
-    <script src="app.js?v=11"></script>
+    <script src="app.js?v=12"></script>
   </body>
 </html>
