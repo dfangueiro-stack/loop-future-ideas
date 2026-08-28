@@ -1504,7 +1504,8 @@ function getCurrentUser() {
 }
 
 function isAdmin() {
-  return getCurrentUser()?.role === "Administrador";
+  const role = getCurrentUser()?.role;
+  return role === "Administrador" || role === "Administrator";
 }
 
 function isCreator(email) {
