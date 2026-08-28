@@ -93,6 +93,7 @@ const translations = {
       password: "Password",
       passwordPlaceholder: "Password temporária",
       setupPasswordPlaceholder: "Define uma password",
+      emailPlaceholder: "email@exemplo.com",
       error: "Email ou password inválidos.",
       setupError: "Insere um email válido e uma password com pelo menos 8 caracteres.",
       userPrefix: "Sessão",
@@ -133,7 +134,7 @@ const translations = {
       image: "Logo / foto",
       addImage: "Adicionar imagem",
       participants: "Participantes",
-      participantPlaceholder: "email@loopfuture.com",
+      participantPlaceholder: "email@exemplo.com",
       jury: "Júri",
       juryName: "Nome",
       juryPhone: "Telefone",
@@ -188,9 +189,9 @@ const translations = {
     filters: { search: "Search", searchPlaceholder: "Title, area, or benefit", status: "Status", sort: "Sort" },
     hackathons: { program: "Innovation programs", created: "Created hackathons", open: "Open", pending: "Pending approval", challenge: "Challenge", rulesDefined: "Rules defined", invitesSent: "Invites sent", invitesPending: "Invites pending", jury: "Jury", rules: "Rules", challengePrompt: "Challenge", shareLink: "Share link", submissions: "Received ideas", noSubmissions: "No applications yet.", evaluation: "Jury evaluation", firstChoice: "1st choice", secondChoice: "2nd choice", thirdChoice: "3rd choice", score: "Score" },
     access: { permissions: "Permissions", title: "Access management", email: "Email", role: "Role", active: "Active", inviteSent: "Invite sent", inviteResent: "Invite resent" },
-    auth: { eyebrow: "Future Box", title: "Sign in to the platform", setupTitle: "Create first administrator", copy: "Use the invited email and temporary password sent by the management team.", setupCopy: "Set the first administrator access to start using the platform.", password: "Password", passwordPlaceholder: "Temporary password", setupPasswordPlaceholder: "Set a password", error: "Invalid email or password.", setupError: "Enter a valid email and a password with at least 8 characters.", userPrefix: "Session", accessHelp: "Granting access generates a temporary password and an invitation to send to the user." },
+    auth: { eyebrow: "Future Box", title: "Sign in to the platform", setupTitle: "Create first administrator", copy: "Use the invited email and temporary password sent by the management team.", setupCopy: "Set the first administrator access to start using the platform.", password: "Password", passwordPlaceholder: "Temporary password", setupPasswordPlaceholder: "Set a password", emailPlaceholder: "email@example.com", error: "Invalid email or password.", setupError: "Enter a valid email and a password with at least 8 characters.", userPrefix: "Session", accessHelp: "Granting access generates a temporary password and an invitation to send to the user." },
     ideaForm: { eyebrow: "Quick draft", title: "Share the essentials.", ideaTitle: "Idea title", ideaTitlePlaceholder: "E.g. Automate report validation", area: "Area", areaOther: "Specify area", areaOtherPlaceholder: "Enter the area", type: "Type", problem: "Current problem", problemPlaceholder: "What is creating waste, friction, or a missed opportunity?", solution: "Proposed improvement", solutionPlaceholder: "How would you imagine the solution?", benefit: "Expected benefit", typeOther: "Specify type", typeOtherPlaceholder: "Enter the type", benefitOther: "Specify benefit", benefitOtherPlaceholder: "Enter the benefit", author: "Author", authorPlaceholder: "Name or team" },
-    hackathonForm: { eyebrow: "New hackathon", title: "Create a collaborative challenge.", name: "Name", namePlaceholder: "E.g. Operational Efficiency Hackathon", goal: "Objective", goalPlaceholder: "What problem or opportunity should this hackathon address?", startDate: "Start date", endDate: "End date", rules: "Rules / regulation", rulesPlaceholder: "Participation criteria, timeline, evaluation, deliverables, and main rules.", image: "Logo / photo", addImage: "Add image", participants: "Participants", participantPlaceholder: "email@loopfuture.com", jury: "Jury", juryName: "Name", juryPhone: "Phone", juryEmail: "Email" },
+    hackathonForm: { eyebrow: "New hackathon", title: "Create a collaborative challenge.", name: "Name", namePlaceholder: "E.g. Operational Efficiency Hackathon", goal: "Objective", goalPlaceholder: "What problem or opportunity should this hackathon address?", startDate: "Start date", endDate: "End date", rules: "Rules / regulation", rulesPlaceholder: "Participation criteria, timeline, evaluation, deliverables, and main rules.", image: "Logo / photo", addImage: "Add image", participants: "Participants", participantPlaceholder: "email@example.com", jury: "Jury", juryName: "Name", juryPhone: "Phone", juryEmail: "Email" },
     challengeForm: { eyebrow: "New challenge", title: "Create employee challenge.", challenge: "Challenge", challengePlaceholder: "What question do you want to launch to employees?", startDate: "Start date", endDate: "End date" },
     applicationForm: { eyebrow: "Application", title: "Apply to the hackathon.", ideaTitle: "Idea name", ideaTitlePlaceholder: "E.g. Solution to speed up onboarding", proposal: "Proposal", proposalPlaceholder: "Describe the proposal, expected impact, and how it would be tested.", author: "Team / author" },
     detail: { area: "Area", type: "Type", benefit: "Benefit", impact: "Impact", effort: "Effort", problem: "Current problem", solution: "Proposed improvement", comments: "Comments", newComment: "New comment", commentPlaceholder: "Evaluation note" },
@@ -505,6 +506,7 @@ function applyLanguage() {
   const icons = { home: "⌂", explore: "□", hackathons: "◇", manage: "✓" };
   els.navItems.forEach((item) => {
     const view = item.dataset.view;
+    item.classList.toggle("hidden", view === "manage" && !isAdmin());
     item.innerHTML = `<span aria-hidden="true">${icons[view]}</span>${t(`nav.${view}`)}`;
   });
 
@@ -560,6 +562,7 @@ function applyLanguage() {
   setText(".access-panel h3", t("access.title"));
   setText("#accessHelp", t("auth.accessHelp"));
   setFieldLabel("accessEmail", t("access.email"));
+  setPlaceholder("#accessEmail", t("auth.emailPlaceholder"));
   setFieldLabel("accessRole", t("access.role"));
   els.grantAccessButton.textContent = t("actions.grantAccess");
   setSelectLabels("accessRole", Object.keys(translations.pt.options.roles).map((role) => optionLabel("roles", role)));
@@ -570,7 +573,7 @@ function applyLanguage() {
   setText(".auth-copy", setupMode ? t("auth.setupCopy") : t("auth.copy"));
   setFieldLabel("loginEmail", t("access.email"));
   setFieldLabel("loginPassword", t("auth.password"));
-  setPlaceholder("#loginEmail", "nome@loopfuture.com");
+  setPlaceholder("#loginEmail", t("auth.emailPlaceholder"));
   setPlaceholder("#loginPassword", setupMode ? t("auth.setupPasswordPlaceholder") : t("auth.passwordPlaceholder"));
   setText("#loginError", setupMode ? t("auth.setupError") : t("auth.error"));
   setText("#loginForm .primary-button", setupMode ? t("actions.grantAccess") : t("actions.signIn"));
@@ -617,7 +620,7 @@ function applyLanguage() {
   document.querySelector("#juryName").closest(".field").querySelector("span").textContent = t("hackathonForm.jury");
   setPlaceholder("#juryName", t("hackathonForm.juryName"));
   setPlaceholder("#juryPhone", t("hackathonForm.juryPhone"));
-  setPlaceholder("#juryEmail", t("hackathonForm.juryEmail"));
+  setPlaceholder("#juryEmail", t("auth.emailPlaceholder"));
   els.addParticipantButton.textContent = t("actions.add");
   els.addJuryButton.textContent = t("actions.add");
   document.querySelector("#hackathonForm .primary-button").textContent = editingHackathonId ? t("actions.save") : t("actions.createHackathon");
@@ -644,13 +647,14 @@ function applyLanguage() {
 }
 
 function setView(view) {
+  if (view === "manage" && !isAdmin()) view = "home";
   els.navItems.forEach((item) => item.classList.toggle("active", item.dataset.view === view));
   els.views.forEach((viewEl) => viewEl.classList.toggle("active", viewEl.id === `${view}View`));
   els.viewTitle.textContent = t(`views.${view}`);
   document.body.dataset.view = view;
   els.openIdeaModalButton.classList.toggle("hidden", view !== "explore");
   els.openHackathonModalButton.classList.add("hidden");
-  els.exportButton.classList.toggle("hidden", view !== "manage");
+  els.exportButton.classList.toggle("hidden", view !== "manage" || !isAdmin());
   if (view !== "explore") els.ideaDetailPanel.classList.add("hidden");
   if (view !== "hackathons") els.hackathonDetailPanel.classList.add("hidden");
   applyLanguage();
@@ -671,10 +675,9 @@ function getFilteredIdeas() {
   const query = els.searchInput.value.trim().toLowerCase();
   const status = els.statusFilter.value;
   const sorted = [...ideas].filter((idea) => {
-    const visible = isPublicItem(idea) || canManageIdea(idea);
     const matchesStatus = status === "all" || idea.status === status;
     const haystack = `${idea.title} ${idea.area} ${idea.type} ${idea.benefit} ${idea.problem} ${idea.solution}`.toLowerCase();
-    return visible && matchesStatus && (!query || haystack.includes(query));
+    return canViewIdea(idea) && matchesStatus && (!query || haystack.includes(query));
   });
 
   if (els.sortSelect.value === "impact") sorted.sort((a, b) => b.impact - a.impact);
@@ -683,11 +686,12 @@ function getFilteredIdeas() {
 }
 
 function renderStats() {
-  const visibleIdeas = ideas.filter((idea) => isPublicItem(idea) || canManageIdea(idea));
+  const visibleIdeas = ideas.filter(canViewIdea);
+  const visibleItems = [...ideas.filter(canViewIdea), ...hackathons.filter(canViewHackathon)];
   els.totalIdeas.textContent = visibleIdeas.length;
   els.pilotIdeas.textContent = visibleIdeas.filter((idea) => idea.status === "Em piloto").length;
-  els.implementedCount.textContent = ideas.filter((idea) => idea.status === "Implementada").length;
-  els.topVotes.textContent = [...ideas, ...hackathons].filter((item) => item.status === "Pendente aprovação" && (isAdmin() || isCreator(item.authorEmail || item.creatorEmail))).length;
+  els.implementedCount.textContent = visibleIdeas.filter((idea) => idea.status === "Implementada").length;
+  els.topVotes.textContent = visibleItems.filter((item) => item.status === "Pendente aprovação").length;
 }
 
 function renderIdeas() {
@@ -736,7 +740,7 @@ function renderHackathons() {
   const template = document.getElementById("hackathonCardTemplate");
   els.hackathonsGrid.innerHTML = "";
   const visibleItems = hackathons
-    .filter((item) => isPublicItem(item) || canManageHackathon(item))
+    .filter(canViewHackathon)
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   if (!visibleItems.length) {
@@ -788,7 +792,7 @@ function renderHackathons() {
 
 function renderHackathonDetailPanel() {
   const item = hackathons.find((hackathon) => hackathon.id === selectedHackathonId);
-  if (!item || (!isPublicItem(item) && !canManageHackathon(item))) {
+  if (!item || !canViewHackathon(item)) {
     els.hackathonDetailPanel.innerHTML = `<p class="empty-state">${t("common.noHackathons")}</p>`;
     els.hackathonDetailPanel.classList.remove("hidden");
     return;
@@ -1066,6 +1070,10 @@ function deleteHackathon(id) {
 
 function renderAccessList() {
   els.accessList.innerHTML = "";
+  if (!isAdmin()) {
+    els.accessList.innerHTML = `<p class="empty-state">${t("common.noAccess")}</p>`;
+    return;
+  }
 
   if (!accessList.length) {
     els.accessList.innerHTML = `<p class="empty-state">${t("common.noAccess")}</p>`;
@@ -1104,7 +1112,7 @@ function renderAccessList() {
 
 function renderPipeline() {
   els.pipeline.innerHTML = "";
-  const reviewableIdeas = ideas.filter((idea) => isAdmin() || canManageIdea(idea));
+  const reviewableIdeas = ideas.filter(canViewIdea);
 
   statusOrder.forEach((status) => {
     const laneIdeas = reviewableIdeas
@@ -1159,7 +1167,7 @@ function renderIdeaDetail(container, ideaId, context) {
     return;
   }
 
-  if (!isPublicItem(idea) && !canManageIdea(idea)) {
+  if (!canViewIdea(idea)) {
     container.innerHTML = `<p class="empty-state">${t("common.noDetail")}</p>`;
     return;
   }
@@ -1412,12 +1420,14 @@ function renderHome() {
   const homeTopIdeaMeta = document.getElementById("homeTopIdeaMeta");
   const homeHackathonTitle = document.getElementById("homeHackathonTitle");
   const homeHackathonMeta = document.getElementById("homeHackathonMeta");
+  const visibleIdeas = ideas.filter(canViewIdea);
+  const visibleHackathons = hackathons.filter(canViewHackathon);
 
-  homeIdeasCount.textContent = ideas.length;
-  homeHackathonsCount.textContent = hackathons.length;
-  homeAccessCount.textContent = accessList.length;
+  homeIdeasCount.textContent = visibleIdeas.length;
+  homeHackathonsCount.textContent = visibleHackathons.length;
+  homeAccessCount.textContent = isAdmin() ? accessList.length : Number(Boolean(getCurrentUser()));
 
-  const topIdea = [...ideas].filter(isPublicItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+  const topIdea = [...visibleIdeas].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
   if (topIdea) {
     homeTopIdeaTitle.textContent = topIdea.title;
     homeTopIdeaMeta.textContent = `${labelForStatus(topIdea.status)} · ${optionLabel("areas", topIdea.area)}`;
@@ -1426,7 +1436,7 @@ function renderHome() {
     homeTopIdeaMeta.textContent = t("home.topIdeaHelp");
   }
 
-  const latestHackathon = [...hackathons].filter(isPublicItem).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+  const latestHackathon = [...visibleHackathons].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
   if (latestHackathon) {
     homeHackathonTitle.textContent = latestHackathon.name;
     homeHackathonMeta.textContent = `${latestHackathon.participants.length} ${t("common.participants")} · ${latestHackathon.startDate ? formatDate(latestHackathon.startDate) : t("common.definedDates").toLowerCase()}`;
@@ -1437,6 +1447,7 @@ function renderHome() {
 }
 
 function grantAccess() {
+  if (!isAdmin()) return;
   const email = els.accessEmail.value.trim().toLowerCase();
   const role = els.accessRole.value;
 
@@ -1506,6 +1517,14 @@ function canManageIdea(idea) {
 
 function canManageHackathon(item) {
   return isAdmin() || isCreator(item.creatorEmail);
+}
+
+function canViewIdea(idea) {
+  return isAdmin() || isPublicItem(idea) || isCreator(idea.authorEmail);
+}
+
+function canViewHackathon(item) {
+  return isAdmin() || isPublicItem(item) || isCreator(item.creatorEmail);
 }
 
 function isJuryForHackathon(item) {
